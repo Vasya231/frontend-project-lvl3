@@ -2,7 +2,7 @@
   "name": "frontend-project-lvl3",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/index.js",
+  "private": true,
   "files": [
     "dist"
   ],
@@ -17,7 +17,9 @@
   },
   "author": "Vasya",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "lodash": "^4.17.15"
+  },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
@@ -28,6 +30,8 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jest": "^23.8.2",
-    "jest": "^25.4.0"
+    "jest": "^25.4.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   }
 }
