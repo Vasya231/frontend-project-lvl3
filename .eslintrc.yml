@@ -5,6 +5,7 @@ plugins:
 env:
   node: true
   jest/globals: true
+  browser: true
 
 extends:
   - 'airbnb-base'
