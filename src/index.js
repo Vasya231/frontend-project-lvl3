@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './scss/app.scss';
 
 const component = () => {
   const element = document.createElement('div');
