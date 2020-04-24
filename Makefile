@@ -20,4 +20,4 @@ coverage:
 	npx jest --coverage
 
 watch:
-	npx jest --watch
+	npx webpack --watch
