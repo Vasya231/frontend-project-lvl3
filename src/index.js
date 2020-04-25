@@ -1,11 +1,16 @@
-import _ from 'lodash';
+// import _ from 'lodash';
+import axios from 'axios';
 import './scss/app.scss';
 
-const component = () => {
+const testRss = () => {
   const element = document.createElement('div');
   console.log('111');
-  element.innerHTML = _.join(['Hello', 'webpack'], ' ');
-  return element;
+  axios.get('https://ru.hexlet.io/lessons.rss').then((response) => {
+    const text = JSON.stringify(response, null, 2);
+    element.textContent = text;
+    console.log(text);
+    document.body.append(element);
+  });
 };
 
-document.body.append(component());
+testRss();
