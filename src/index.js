@@ -21,6 +21,7 @@ const app = () => {
   const state = new State();
   watch(state);
   testRss('https://codepen.io/picks/feed/', state);
+  setTimeout(() => testRss('https://ru.hexlet.io/lessons.rss', state), 10000);
 };
 
 app();
