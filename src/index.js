@@ -1,15 +1,21 @@
 // import _ from 'lodash';
 import axios from 'axios';
 import './scss/app.scss';
+import parse from './utils';
+import render from './view';
+import State from './State';
 
 const testRss = () => {
-  const element = document.createElement('div');
-  console.log('111');
+  const state = new State();
   axios.get('https://ru.hexlet.io/lessons.rss').then((response) => {
-    const text = JSON.stringify(response, null, 2);
-    element.textContent = text;
-    console.log(text);
-    document.body.append(element);
+    console.log(response);
+    const parsedObj = parse(response);
+    state.addFeed(parsedObj.rssFeedTitle, parsedObj.rssFeedDesc);
+    parsedObj.itemList.forEach(({
+      title, description, link, date,
+    }) => state.addItem(title, description, link, date));
+    console.log(JSON.stringify(state, null, 2));
+    render(state);
   });
 };
 
