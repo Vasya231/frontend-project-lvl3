@@ -13,7 +13,7 @@ const testRss = () => {
     state.addFeed(parsedObj.rssFeedTitle, parsedObj.rssFeedDesc);
     parsedObj.itemList.forEach(({
       title, description, link,
-    }) => state.addItem(title, description, link,));
+    }) => state.addItem(title, description, link));
     console.log(JSON.stringify(state, null, 2));
     render(state);
   });
