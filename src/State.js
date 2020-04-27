@@ -16,10 +16,10 @@ class State {
     return id;
   };
 
-  addItem = (title, description, link, pubdate) => {
+  addItem = (title, description, link) => {
     const id = uniqueId();
     this.items.push({
-      id, title, description, link, pubdate,
+      id, title, description, link,
     });
     return id;
   };

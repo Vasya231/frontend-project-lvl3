@@ -12,8 +12,8 @@ const testRss = () => {
     const parsedObj = parse(response);
     state.addFeed(parsedObj.rssFeedTitle, parsedObj.rssFeedDesc);
     parsedObj.itemList.forEach(({
-      title, description, link, date,
-    }) => state.addItem(title, description, link, date));
+      title, description, link,
+    }) => state.addItem(title, description, link,));
     console.log(JSON.stringify(state, null, 2));
     render(state);
   });
