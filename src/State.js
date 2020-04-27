@@ -10,9 +10,11 @@ class State {
     value: '',
   };
 
-  addFeed = (title, description) => {
+  addFeed = (rssLink, title, description) => {
     const id = uniqueId();
-    this.feeds.push({ id, title, description });
+    this.feeds.push({
+      id, rssLink, title, description,
+    });
     return id;
   };
 

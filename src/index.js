@@ -2,21 +2,25 @@
 import axios from 'axios';
 import './scss/app.scss';
 import parse from './utils';
-import render from './view';
+import watch from './view';
 import State from './State';
 
-const testRss = () => {
-  const state = new State();
-  axios.get('https://ru.hexlet.io/lessons.rss').then((response) => {
+const testRss = (rssLink, state) => {
+  axios.get(rssLink).then((response) => {
     console.log(response);
     const parsedObj = parse(response);
-    state.addFeed(parsedObj.rssFeedTitle, parsedObj.rssFeedDesc);
+    state.addFeed(rssLink, parsedObj.rssFeedTitle, parsedObj.rssFeedDesc);
     parsedObj.itemList.forEach(({
       title, description, link,
     }) => state.addItem(title, description, link));
     console.log(JSON.stringify(state, null, 2));
-    render(state);
   });
 };
 
-testRss();
+const app = () => {
+  const state = new State();
+  watch(state);
+  testRss('https://codepen.io/picks/feed/', state);
+};
+
+app();

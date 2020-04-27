@@ -1,3 +1,5 @@
+import { watch } from 'melanke-watchjs';
+
 const generateFeedElement = ({ title, description }) => {
   const el = document.createElement('div');
   const titleEl = document.createElement('div');
@@ -26,4 +28,10 @@ const render = (state) => {
   state.getItems().forEach((item) => itemsColElement.append(generateItemElement(item)));
 };
 
-export default render;
+const watchState = (state) => {
+  watch(state, () => {
+    render(state);
+  });
+};
+
+export default watchState;
