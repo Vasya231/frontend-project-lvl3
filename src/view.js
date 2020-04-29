@@ -20,6 +20,7 @@ const generateItemElement = ({ title, link }) => {
 };
 
 const render = (state) => {
+  console.log(JSON.stringify(state, null, 2));
   const feedsColElement = document.querySelector('div.rss-feeds');
   const itemsColElement = document.querySelector('div.rss-items');
   feedsColElement.innerHTML = '';
