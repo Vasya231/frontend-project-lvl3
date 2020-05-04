@@ -1,7 +1,7 @@
 // import _ from 'lodash';
 import axios from 'axios';
 import './scss/app.scss';
-import watch from './view';
+import init from './view';
 import State from './State';
 import parseRss from './utils';
 
@@ -25,22 +25,53 @@ const updateFeeds = (state) => {
     });
     return promise;
   });
-  Promise.all(updatePromises).then(state.updateShowedItems).catch(state.updateShowedItems);
+  Promise.all(updatePromises);
+};
+
+const generateSubmitHandler = (state) => (event) => {
+  event.preventDefault();
+  const rssLink = state.getFormValue();
+  console.log(rssLink);
+  state.setFormState('sending');
+  loadRss(rssLink)
+    .then((parsedRss) => {
+      const {
+        title, description, itemList,
+      } = parsedRss;
+      state.addFeed(rssLink, title, description, itemList);
+      state.setFormValue('');
+      state.setFormError('');
+      state.setFormState('filling');
+      state.setFormValidity(false);
+    })
+    .catch((error) => {
+      state.setFormState('filling');
+      state.setFormError(error.name);
+    });
+};
+
+const generateInputHandler = (state) => (event) => {
+  event.preventDefault();
+  console.log('Change handler called');
+  console.log(event.currentTarget);
+  const { value } = event.target;
+  state.setFormValue(value);
+  state.setFormValidity((value !== ''));
 };
 
 const app = () => {
   const state = new State();
-  watch(state);
+  init(state, generateSubmitHandler(state), generateInputHandler(state));
   // testRss('https://codepen.io/picks/feed/', state);
   // setTimeout(() => testRss('https://ru.hexlet.io/', state), 10000);
-  loadRss('https://codepen.io/picks/feed/').then((parsedRss) => {
+  /* loadRss('https://codepen.io/picks/feed/').then((parsedRss) => {
     const {
       title, description, itemList,
     } = parsedRss;
     state.addFeed('https://codepen.io/picks/feed/', title, description, itemList);
-    state.updateShowedItems();
-  });
-  setInterval(() => updateFeeds(state), 10000);
+  }); */
+
+  // setInterval(() => updateFeeds(state), 10000);
 };
 
 app();

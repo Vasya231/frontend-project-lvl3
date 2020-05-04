@@ -19,7 +19,7 @@ const generateItemElement = ({ title, link }) => {
   return el;
 };
 
-const render = (state) => {
+const renderFeeds = (state) => {
   console.log(JSON.stringify(state, null, 2));
   const feedsColElement = document.querySelector('div.rss-feeds');
   const itemsColElement = document.querySelector('div.rss-items');
@@ -29,10 +29,37 @@ const render = (state) => {
   state.getItems().forEach((item) => itemsColElement.append(generateItemElement(item)));
 };
 
-const watchState = (state) => {
-  watch(state, () => {
-    render(state);
+const renderForm = (state) => {
+  const feedbackDiv = document.querySelector('div.feedback');
+  const submitButton = document.querySelector('button[type="submit"]');
+  const inputField = document.querySelector('input[name="url"]');
+  const processState = state.getFormState();
+  switch (processState) {
+    case 'filling':
+      submitButton.removeAttribute('disabled');
+      feedbackDiv.textContent = state.getFormError();
+      inputField.setAttribute('value', state.getFormValue());
+      break;
+    case 'sending':
+      submitButton.setAttribute('disabled', '');
+      feedbackDiv.textContent = state.getFormError();
+      inputField.setAttribute('value', state.getFormValue());
+      break;
+    default: throw new Error(`Wrong state: ${processState}`);
+  }
+};
+
+const init = (state, submitHandler, inputHandler) => {
+  const inputField = document.querySelector('input[name="url"]');
+  const form = document.querySelector('form');
+  form.addEventListener('submit', submitHandler);
+  inputField.addEventListener('input', inputHandler);
+  watch(state, 'feeds', () => {
+    renderFeeds(state);
+  });
+  watch(state, 'form', () => {
+    renderForm(state);
   });
 };
 
-export default watchState;
+export default init;

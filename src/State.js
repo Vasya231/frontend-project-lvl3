@@ -3,11 +3,11 @@ import { uniqueId } from 'lodash';
 class State {
   feeds = [];
 
-  showedItems = [];
-
   form = {
-    state: 'invalid',
+    processState: 'filling',
     value: '',
+    error: '',
+    valid: false,
   };
 
   addFeed = (link, title, description, itemList = []) => {
@@ -38,13 +38,6 @@ class State {
     return ids;
   };
 
-  updateShowedItems = () => {
-    this.showedItems = this.getFeeds().reduce(
-      (acc, { itemList }) => [...acc, ...itemList],
-      [],
-    );
-  };
-
   updateFeed = (feedId, link, title, description, itemList) => {
     const feed = this.getFeed(feedId);
     feed.link = link;
@@ -58,7 +51,32 @@ class State {
 
   getFeeds = () => this.feeds;
 
-  getItems = () => this.showedItems;
+  getItems = () => this.getFeeds().reduce(
+    (acc, { itemList }) => [...acc, ...itemList],
+    [],
+  );
+
+  getFormValue = () => this.form.value;
+
+  setFormValue = (value) => {
+    this.form.value = value;
+  };
+
+  getFormError = () => this.form.error;
+
+  setFormError = (error) => {
+    this.form.error = error;
+  };
+
+  setFormState = (processState) => {
+    this.form.processState = processState;
+  };
+
+  getFormState = () => this.form.processState;
+
+  setFormValidity = (isValid) => {
+    this.form.valid = isValid;
+  }
 }
 
 export default State;
