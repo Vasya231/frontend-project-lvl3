@@ -31,7 +31,11 @@ const updateFeeds = (state) => {
 const generateSubmitHandler = (state) => (event) => {
   event.preventDefault();
   const rssLink = state.getFormValue();
-  console.log(rssLink);
+  const feeds = state.getFeeds();
+  if (feeds.findIndex(({ link }) => (link === rssLink)) !== -1) {
+    state.setFormError('Feed already in list');
+    return;
+  }
   state.setFormState('sending');
   loadRss(rssLink)
     .then((parsedRss) => {
@@ -46,14 +50,12 @@ const generateSubmitHandler = (state) => (event) => {
     })
     .catch((error) => {
       state.setFormState('filling');
-      state.setFormError(error.name);
+      state.setFormError(error);
     });
 };
 
 const generateInputHandler = (state) => (event) => {
   event.preventDefault();
-  console.log('Change handler called');
-  console.log(event.currentTarget);
   const { value } = event.target;
   state.setFormValue(value);
   state.setFormValidity((value !== ''));

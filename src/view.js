@@ -38,12 +38,12 @@ const renderForm = (state) => {
     case 'filling':
       submitButton.removeAttribute('disabled');
       feedbackDiv.textContent = state.getFormError();
-      inputField.setAttribute('value', state.getFormValue());
+      inputField.value = state.getFormValue();
       break;
     case 'sending':
       submitButton.setAttribute('disabled', '');
       feedbackDiv.textContent = state.getFormError();
-      inputField.setAttribute('value', state.getFormValue());
+      inputField.value = state.getFormValue();
       break;
     default: throw new Error(`Wrong state: ${processState}`);
   }
@@ -54,6 +54,7 @@ const init = (state, submitHandler, inputHandler) => {
   const form = document.querySelector('form');
   form.addEventListener('submit', submitHandler);
   inputField.addEventListener('input', inputHandler);
+  renderForm(state);
   watch(state, 'feeds', () => {
     renderFeeds(state);
   });
