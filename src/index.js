@@ -73,7 +73,7 @@ const app = () => {
     state.addFeed('https://codepen.io/picks/feed/', title, description, itemList);
   }); */
 
-  // setInterval(() => updateFeeds(state), 10000);
+  setInterval(() => updateFeeds(state), 10000);
 };
 
 app();
