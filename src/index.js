@@ -3,14 +3,14 @@ import axios from 'axios';
 import './scss/app.scss';
 import init from './view';
 import State from './State';
-import parseRss from './utils';
+import { parseRss, isValid } from './utils';
 
 const loadRss = (rssLink) => axios.get(rssLink).then((response) => {
   const isRss = response.headers['content-type'].includes('application/rss+xml');
   if (!isRss) {
     throw new Error('Not an RSS feed!');
   }
-  const parsedObj = parseRss(response);
+  const parsedObj = parseRss(response.data);
   return Promise.resolve(parsedObj);
 });
 
@@ -32,8 +32,12 @@ const generateSubmitHandler = (state) => (event) => {
   event.preventDefault();
   const rssLink = state.getFormValue();
   const feeds = state.getFeeds();
+  if (!isValid(rssLink)) {
+    state.setFormError('Error: not an url');
+    return;
+  }
   if (feeds.findIndex(({ link }) => (link === rssLink)) !== -1) {
-    state.setFormError('Feed already in list');
+    state.setFormError('Error: Feed already in list');
     return;
   }
   state.setFormState('sending');

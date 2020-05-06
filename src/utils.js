@@ -1,3 +1,5 @@
+import * as yup from 'yup';
+
 const generateListItem = (item) => {
   // console.log(item);
   const title = item.querySelector('title').textContent;
@@ -8,9 +10,9 @@ const generateListItem = (item) => {
   };
 };
 
-const parseRss = (rssResponse) => {
+const parseRss = (data) => {
   const parser = new DOMParser();
-  const xml = parser.parseFromString(rssResponse.data, 'text/xml');
+  const xml = parser.parseFromString(data, 'text/xml');
   const title = xml.querySelector('channel > title').textContent;
   const description = xml.querySelector('channel > description').textContent;
   const items = xml.querySelectorAll('channel > item');
@@ -18,4 +20,17 @@ const parseRss = (rssResponse) => {
   return { title, description, itemList };
 };
 
-export default parseRss;
+const schema = yup.object().shape({
+  url: yup.string().required().url(),
+});
+
+const isValid = (string) => {
+  try {
+    schema.validateSync({ url: string });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export { parseRss, isValid };
