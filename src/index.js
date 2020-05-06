@@ -1,14 +1,16 @@
 // import _ from 'lodash';
 import axios from 'axios';
 import './scss/app.scss';
+import i18 from 'i18next';
 import init from './view';
 import State from './State';
 import { parseRss, isValid } from './utils';
+import texts from './locales';
 
 const loadRss = (rssLink) => axios.get(rssLink).then((response) => {
   const isRss = response.headers['content-type'].includes('application/rss+xml');
   if (!isRss) {
-    throw new Error('Not an RSS feed!');
+    throw new Error(i18.t('errors.notRss'));
   }
   const parsedObj = parseRss(response.data);
   return Promise.resolve(parsedObj);
@@ -33,11 +35,11 @@ const generateSubmitHandler = (state) => (event) => {
   const rssLink = state.getFormValue();
   const feeds = state.getFeeds();
   if (!isValid(rssLink)) {
-    state.setFormError('Error: not an url');
+    state.setFormError(i18.t('errors.notUrl'));
     return;
   }
   if (feeds.findIndex(({ link }) => (link === rssLink)) !== -1) {
-    state.setFormError('Error: Feed already in list');
+    state.setFormError(i18.t('errors.alreadyAdded'));
     return;
   }
   state.setFormState('sending');
@@ -66,18 +68,15 @@ const generateInputHandler = (state) => (event) => {
 };
 
 const app = () => {
-  const state = new State();
-  init(state, generateSubmitHandler(state), generateInputHandler(state));
-  // testRss('https://codepen.io/picks/feed/', state);
-  // setTimeout(() => testRss('https://ru.hexlet.io/', state), 10000);
-  /* loadRss('https://codepen.io/picks/feed/').then((parsedRss) => {
-    const {
-      title, description, itemList,
-    } = parsedRss;
-    state.addFeed('https://codepen.io/picks/feed/', title, description, itemList);
-  }); */
-
-  setInterval(() => updateFeeds(state), 10000);
+  i18.init({
+    lng: 'en',
+    debug: true,
+    resources: texts,
+  }).then(() => {
+    const state = new State();
+    init(state, generateSubmitHandler(state), generateInputHandler(state));
+    setInterval(() => updateFeeds(state), 10000);
+  });
 };
 
 app();
