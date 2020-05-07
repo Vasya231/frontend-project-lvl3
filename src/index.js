@@ -3,9 +3,9 @@ import axios from 'axios';
 import './scss/app.scss';
 import init from './view';
 import State from './State';
-import { parseRss, isValidUrl } from './utils';
+import { parseRss, isValidUrl, proxifyUrl } from './utils';
 
-const loadRss = (rssLink) => axios.get(rssLink).then((response) => {
+const loadRss = (rssLink) => axios.get(proxifyUrl(rssLink)).then((response) => {
   const isRss = response.headers['content-type'].includes('application/rss+xml');
   if (!isRss) {
     throw new Error('notRss');

@@ -24,6 +24,8 @@ const schema = yup.object().shape({
   url: yup.string().required().url(),
 });
 
+const proxifyUrl = (url) => `https://cors-anywhere.herokuapp.com/${url}`;
+
 const isValidUrl = (string) => {
   try {
     schema.validateSync({ url: string });
@@ -33,4 +35,4 @@ const isValidUrl = (string) => {
   }
 };
 
-export { parseRss, isValidUrl };
+export { parseRss, isValidUrl, proxifyUrl };
