@@ -3,7 +3,7 @@ import axios from 'axios';
 import './scss/app.scss';
 import init from './view';
 import State from './State';
-import { parseRss, isValid } from './utils';
+import { parseRss, isValidUrl } from './utils';
 
 const loadRss = (rssLink) => axios.get(rssLink).then((response) => {
   const isRss = response.headers['content-type'].includes('application/rss+xml');
@@ -32,7 +32,7 @@ const generateSubmitHandler = (state) => (event) => {
   event.preventDefault();
   const rssLink = state.getFormValue();
   const feeds = state.getFeeds();
-  if (!isValid(rssLink)) {
+  if (!isValidUrl(rssLink)) {
     state.setFormError('notUrl');
     return;
   }
@@ -50,7 +50,7 @@ const generateSubmitHandler = (state) => (event) => {
       state.setFormValue('');
       state.setFormError('');
       state.setFormState('filling');
-      state.setFormValidity(false);
+      state.setFormValidity(true);
     })
     .catch((error) => {
       state.setFormState('filling');
@@ -62,7 +62,7 @@ const generateInputHandler = (state) => (event) => {
   event.preventDefault();
   const { value } = event.target;
   state.setFormValue(value);
-  state.setFormValidity(isValid(value) || (value === ''));
+  state.setFormValidity(isValidUrl(value) || (value === ''));
 };
 
 const app = () => {

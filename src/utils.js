@@ -24,7 +24,7 @@ const schema = yup.object().shape({
   url: yup.string().required().url(),
 });
 
-const isValid = (string) => {
+const isValidUrl = (string) => {
   try {
     schema.validateSync({ url: string });
     return true;
@@ -33,4 +33,4 @@ const isValid = (string) => {
   }
 };
 
-export { parseRss, isValid };
+export { parseRss, isValidUrl };
