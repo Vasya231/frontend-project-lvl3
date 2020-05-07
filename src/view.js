@@ -44,6 +44,11 @@ const renderForm = (state) => {
       const error = state.getFormError();
       feedbackDiv.textContent = error ? getErrorMessage(error) : '';
       inputField.value = state.getFormValue();
+      if (state.form.valid) {
+        inputField.classList.remove('is-invalid');
+      } else {
+        inputField.classList.add('is-invalid');
+      }
       break;
     }
     case 'sending':

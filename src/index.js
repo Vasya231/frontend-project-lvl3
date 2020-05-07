@@ -62,7 +62,7 @@ const generateInputHandler = (state) => (event) => {
   event.preventDefault();
   const { value } = event.target;
   state.setFormValue(value);
-  state.setFormValidity((value !== ''));
+  state.setFormValidity(isValid(value) || (value === ''));
 };
 
 const app = () => {

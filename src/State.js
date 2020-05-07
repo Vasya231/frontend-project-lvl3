@@ -7,7 +7,7 @@ class State {
     processState: 'filling',
     value: '',
     error: '',
-    valid: false,
+    valid: true,
   };
 
   addFeed = (link, title, description, itemList = []) => {
@@ -24,7 +24,7 @@ class State {
     const id = uniqueId();
     const feed = this.getFeed(feedId);
     feed.itemList.push({
-      id, title, description, link,
+      id, feedId, title, description, link,
     });
     return id;
   };
