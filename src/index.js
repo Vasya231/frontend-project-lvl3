@@ -41,7 +41,7 @@ const restartTimer = (state) => {
 
 const generateSubmitHandler = (state) => (event) => {
   event.preventDefault();
-  const rssLink = state.getFormValue();
+  const rssLink = new URL(state.getFormValue()).href;
   const feeds = state.getFeeds();
   if (!isValidUrl(rssLink)) {
     state.setFormError('notUrl');
