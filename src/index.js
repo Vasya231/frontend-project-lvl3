@@ -4,6 +4,7 @@ import './scss/app.scss';
 import init from './view';
 import State from './State';
 import { parseRss, isValidUrl, proxifyUrl } from './utils';
+import getErrorType from './errors';
 
 const loadRss = (rssLink) => axios.get(proxifyUrl(rssLink), { timeout: 7000 }).then((response) => {
   const isRss = response.headers['content-type'].includes('application/rss+xml');
@@ -64,7 +65,12 @@ const generateSubmitHandler = (state) => (event) => {
     })
     .catch((error) => {
       state.setFormState('filling');
-      state.setFormError(error.message);
+      const errorType = getErrorType(error);
+      state.setFormError(errorType);
+      if (errorType === 'unknownError') {
+        console.log('Unexpected error occured:');
+        console.log(error);
+      }
     });
 };
 
