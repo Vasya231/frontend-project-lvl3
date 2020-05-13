@@ -5,7 +5,7 @@ import init from './view';
 import State from './State';
 import { parseRss, isValidUrl, proxifyUrl } from './utils';
 
-const loadRss = (rssLink) => axios.get(proxifyUrl(rssLink)).then((response) => {
+const loadRss = (rssLink) => axios.get(proxifyUrl(rssLink), { timeout: 7000 }).then((response) => {
   const isRss = response.headers['content-type'].includes('application/rss+xml');
   if (!isRss) {
     throw new Error('notRss');
@@ -22,10 +22,20 @@ const updateFeeds = (state) => {
         title, description, itemList,
       } = parsedRss;
       state.updateFeed(id, link, title, description, itemList);
+      console.log(`Feed ${title} updated!`);
     });
-    return promise;
+    return (promise.catch((e) => {
+      console.log(`ERROR while updating feed ${link}:`, e);
+    }));
   });
-  Promise.all(updatePromises);
+  return Promise.all(updatePromises);
+};
+
+const restartTimer = (state) => {
+  setTimeout(() => updateFeeds(state).then(() => {
+    console.log('Setting new timeout!');
+    restartTimer(state);
+  }), 10000);
 };
 
 const generateSubmitHandler = (state) => (event) => {
@@ -68,7 +78,7 @@ const generateInputHandler = (state) => (event) => {
 const app = () => {
   const state = new State();
   init(state, generateSubmitHandler(state), generateInputHandler(state));
-  setInterval(() => updateFeeds(state), 10000);
+  restartTimer(state);
 };
 
 app();

@@ -24,7 +24,7 @@ const generateItemElement = ({ title, link }) => {
 const getErrorMessage = (error) => i18.t(`errors.${error}`);
 
 const renderFeeds = (state) => {
-  console.log(JSON.stringify(state, null, 2));
+  // console.log(JSON.stringify(state, null, 2));
   const feedsColElement = document.querySelector('div.rss-feeds');
   const itemsColElement = document.querySelector('div.rss-items');
   feedsColElement.innerHTML = '';
