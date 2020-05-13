@@ -4,7 +4,7 @@ import texts from './locales';
 
 const generateFeedElement = ({ title, description }) => {
   const el = document.createElement('div');
-  const titleEl = document.createElement('div');
+  const titleEl = document.createElement('h3');
   const descriptionEl = document.createElement('div');
   titleEl.textContent = title;
   descriptionEl.textContent = description;
