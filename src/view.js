@@ -71,7 +71,8 @@ const init = (state, submitHandler, inputHandler) => {
     const form = document.querySelector('form');
     form.addEventListener('submit', submitHandler);
     inputField.addEventListener('input', inputHandler);
-    renderForm(state);
+    // renderForm(state);
+    form.reset();
     watch(state, 'feeds', () => {
       renderFeeds(state);
     });
