@@ -41,12 +41,13 @@ const restartTimer = (state) => {
 
 const generateSubmitHandler = (state) => (event) => {
   event.preventDefault();
-  const rssLink = new URL(state.getFormValue()).href;
-  const feeds = state.getFeeds();
-  if (!isValidUrl(rssLink)) {
+  const formValue = state.getFormValue();
+  if (!isValidUrl(formValue)) {
     state.setFormError('notUrl');
     return;
   }
+  const rssLink = new URL(formValue).href;
+  const feeds = state.getFeeds();
   if (feeds.findIndex(({ link }) => (link === rssLink)) !== -1) {
     state.setFormError('alreadyAdded');
     return;
