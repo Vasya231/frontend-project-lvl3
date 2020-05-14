@@ -38,10 +38,10 @@ const renderForm = (state) => {
   const submitButton = document.querySelector('button[type="submit"]');
   const inputField = document.querySelector('input[name="url"]');
   const processState = state.getFormState();
+  const error = state.getFormError();
   switch (processState) {
-    case 'filling': {
+    case 'filling':
       submitButton.removeAttribute('disabled');
-      const error = state.getFormError();
       feedbackDiv.textContent = error ? getErrorMessage(error) : '';
       inputField.value = state.getFormValue();
       if (state.isFormValid()) {
@@ -50,10 +50,9 @@ const renderForm = (state) => {
         inputField.classList.add('is-invalid');
       }
       break;
-    }
     case 'sending':
       submitButton.setAttribute('disabled', '');
-      feedbackDiv.textContent = state.getFormError();
+      feedbackDiv.textContent = error ? getErrorMessage(error) : '';
       inputField.value = state.getFormValue();
       break;
     default: throw new Error(`Wrong state: ${processState}`);

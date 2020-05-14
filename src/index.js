@@ -1,6 +1,6 @@
 import axios from 'axios';
 import './scss/app.scss';
-import init from './view';
+import initView from './view';
 import State from './State';
 import { parseRss, isValidUrl, proxifyUrl } from './utils';
 import getErrorType from './errors';
@@ -79,7 +79,7 @@ const generateInputHandler = (state) => (event) => {
 
 const app = () => {
   const state = new State();
-  init(state, generateSubmitHandler(state), generateInputHandler(state));
+  initView(state, generateSubmitHandler(state), generateInputHandler(state));
   restartTimer(state);
 };
 
