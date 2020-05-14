@@ -25,7 +25,6 @@ const generateItemElement = ({ title, link }) => {
 const getErrorMessage = (error) => i18.t(`errors.${error}`);
 
 const renderFeeds = (state) => {
-  // console.log(JSON.stringify(state, null, 2));
   const feedsColElement = document.querySelector('div.rss-feeds');
   const itemsColElement = document.querySelector('div.rss-items');
   feedsColElement.innerHTML = '';
@@ -45,7 +44,7 @@ const renderForm = (state) => {
       const error = state.getFormError();
       feedbackDiv.textContent = error ? getErrorMessage(error) : '';
       inputField.value = state.getFormValue();
-      if (state.form.valid) {
+      if (state.isFormValid()) {
         inputField.classList.remove('is-invalid');
       } else {
         inputField.classList.add('is-invalid');
@@ -71,7 +70,6 @@ const init = (state, submitHandler, inputHandler) => {
     const form = document.querySelector('form');
     form.addEventListener('submit', submitHandler);
     inputField.addEventListener('input', inputHandler);
-    // renderForm(state);
     form.reset();
     watch(state, 'feeds', () => {
       renderFeeds(state);

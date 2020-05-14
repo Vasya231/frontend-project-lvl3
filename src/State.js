@@ -77,6 +77,8 @@ class State {
   setFormValidity = (isValid) => {
     this.form.valid = isValid;
   }
+
+  isFormValid = () => this.form.valid;
 }
 
 export default State;

@@ -1,4 +1,3 @@
-// import _ from 'lodash';
 import axios from 'axios';
 import './scss/app.scss';
 import init from './view';
@@ -23,7 +22,6 @@ const updateFeeds = (state) => {
         title, description, itemList,
       } = parsedRss;
       state.updateFeed(id, link, title, description, itemList);
-      console.log(`Feed ${title} updated!`);
     });
     return (promise.catch((e) => {
       console.log(`ERROR while updating feed ${link}:`, e);
@@ -33,10 +31,7 @@ const updateFeeds = (state) => {
 };
 
 const restartTimer = (state) => {
-  setTimeout(() => updateFeeds(state).then(() => {
-    console.log('Setting new timeout!');
-    restartTimer(state);
-  }), 10000);
+  setTimeout(() => updateFeeds(state).then(() => restartTimer(state)), 10000);
 };
 
 const generateSubmitHandler = (state) => (event) => {
