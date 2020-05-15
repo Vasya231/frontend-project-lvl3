@@ -4,15 +4,18 @@ import initView from './view';
 import State from './State';
 import { parseRss, isValidUrl, proxifyUrl } from './utils';
 import getErrorType from './errors';
+import settings from './settings';
 
-const loadRss = (rssLink) => axios.get(proxifyUrl(rssLink), { timeout: 7000 }).then((response) => {
-  const isRss = response.headers['content-type'].includes('application/rss+xml');
-  if (!isRss) {
-    throw new Error('notRss');
-  }
-  const parsedObj = parseRss(response.data);
-  return Promise.resolve(parsedObj);
-});
+const loadRss = (rssLink) => axios
+  .get(proxifyUrl(rssLink), { timeout: settings.responseTimeout })
+  .then((response) => {
+    const isRss = response.headers['content-type'].includes('application/rss+xml');
+    if (!isRss) {
+      throw new Error('notRss');
+    }
+    const parsedObj = parseRss(response.data);
+    return Promise.resolve(parsedObj);
+  });
 
 const updateFeeds = (state) => {
   const feeds = state.getFeeds();
@@ -31,7 +34,7 @@ const updateFeeds = (state) => {
 };
 
 const restartTimer = (state) => {
-  setTimeout(() => updateFeeds(state).then(() => restartTimer(state)), 10000);
+  setTimeout(() => updateFeeds(state).then(() => restartTimer(state)), settings.refreshTimeout);
 };
 
 const generateSubmitHandler = (state) => (event) => {
