@@ -72,7 +72,9 @@ const generateSubmitHandler = (state) => (event) => {
 
 const generateInputHandler = (state) => (event) => {
   event.preventDefault();
-  const { value } = event.target;
+  const form = event.target.closest('form.rss-form');
+  const formData = new FormData(form);
+  const value = formData.get('url');
   state.setFormValue(value);
   state.setFormValidity(isValidUrl(value) || (value === ''));
 };
