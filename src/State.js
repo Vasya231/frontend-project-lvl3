@@ -10,20 +10,20 @@ class State {
     valid: true,
   };
 
-  addFeed = (link, title, description, itemList = []) => {
+  addFeed = (link, title, description, items = []) => {
     const id = uniqueId();
     const newFeed = {
-      id, link, title, description, itemList: [],
+      id, link, title, description, items: [],
     };
     this.getFeeds().push(newFeed);
-    this.addItemsToFeed(id, itemList);
+    this.addItemsToFeed(id, items);
     return id;
   };
 
   addItemToFeed = (feedId, title, description, link) => {
     const id = uniqueId();
     const feed = this.getFeed(feedId);
-    feed.itemList.push({
+    feed.items.push({
       id, feedId, title, description, link,
     });
     return id;
@@ -38,13 +38,13 @@ class State {
     return ids;
   };
 
-  updateFeed = (feedId, link, title, description, itemList) => {
+  updateFeed = (feedId, link, title, description, items) => {
     const feed = this.getFeed(feedId);
     feed.link = link;
     feed.title = title;
     feed.description = description;
-    feed.itemList = [];
-    this.addItemsToFeed(feedId, itemList);
+    feed.items = [];
+    this.addItemsToFeed(feedId, items);
   };
 
   getFeed = (id) => this.getFeeds().find(({ id: currentId }) => (currentId === id));
@@ -52,7 +52,7 @@ class State {
   getFeeds = () => this.feeds;
 
   getItems = () => this.getFeeds().reduce(
-    (acc, { itemList }) => [...acc, ...itemList],
+    (acc, { items }) => [...acc, ...items],
     [],
   );
 

@@ -15,9 +15,9 @@ const parseRss = (data) => {
   const xml = parser.parseFromString(data, 'text/xml');
   const title = xml.querySelector('channel > title').textContent;
   const description = xml.querySelector('channel > description').textContent;
-  const items = xml.querySelectorAll('channel > item');
-  const itemList = [...items].map(generateListItem);
-  return { title, description, itemList };
+  const itemsXml = xml.querySelectorAll('channel > item');
+  const items = [...itemsXml].map(generateListItem);
+  return { title, description, items };
 };
 
 const schema = yup.object().shape({

@@ -19,9 +19,9 @@ const updateFeeds = (state) => {
   const updatePromises = feeds.map(({ id, link }) => {
     const promise = loadRss(link).then((parsedRss) => {
       const {
-        title, description, itemList,
+        title, description, items,
       } = parsedRss;
-      state.updateFeed(id, link, title, description, itemList);
+      state.updateFeed(id, link, title, description, items);
     });
     return (promise.catch((e) => {
       console.log(`ERROR while updating feed ${link}:`, e);
@@ -51,9 +51,9 @@ const generateSubmitHandler = (state) => (event) => {
   loadRss(rssLink)
     .then((parsedRss) => {
       const {
-        title, description, itemList,
+        title, description, items,
       } = parsedRss;
-      state.addFeed(rssLink, title, description, itemList);
+      state.addFeed(rssLink, title, description, items);
       state.setFormValue('');
       state.setFormError('');
       state.setFormState('filling');
