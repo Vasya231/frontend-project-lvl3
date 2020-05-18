@@ -32,7 +32,8 @@ class State {
 
   addItemsToFeed = (feedId, items) => {
     const ids = [];
-    items.forEach(({ title, description, link }) => {
+    const itemsFromOldestToNewest = [...items].reverse();
+    itemsFromOldestToNewest.forEach(({ title, description, link }) => {
       const id = this.addItemToFeed(feedId, title, description, link);
       ids.push(id);
     });
