@@ -1,8 +1,4 @@
 import './scss/app.scss';
-import initApp from './view';
-import State from './State';
-import { generateInputHandler, generateSubmitHandler, restartTimer } from './controller';
+import app from './app';
 
-const state = new State();
-initApp(state, generateSubmitHandler(state), generateInputHandler(state));
-restartTimer(state);
+app();
