@@ -23,8 +23,9 @@ class State {
   addItemToFeed = (feedId, title, description, link) => {
     const id = uniqueId();
     const feed = this.getFeed(feedId);
+    const dateAdded = Date.now();
     feed.items.push({
-      id, feedId, title, description, link,
+      id, feedId, title, description, link, dateAdded,
     });
     return id;
   };
@@ -43,18 +44,20 @@ class State {
     feed.link = link;
     feed.title = title;
     feed.description = description;
-    feed.items = [];
-    this.addItemsToFeed(feedId, items);
+    const newItems = items.filter((item) => !(this.feedHasItem(feedId, item)));
+    this.addItemsToFeed(feedId, newItems);
   };
 
   getFeed = (id) => this.getFeeds().find(({ id: currentId }) => (currentId === id));
 
   getFeeds = () => this.feeds;
 
-  getItems = () => this.getFeeds().reduce(
-    (acc, { items }) => [...acc, ...items],
-    [],
-  );
+  getItems = () => this.getFeeds()
+    .reduce(
+      (acc, { items }) => [...acc, ...items],
+      [],
+    )
+    .sort(({ dateAdded: date1 }, { dateAdded: date2 }) => (date2 - date1));
 
   getFormValue = () => this.form.value;
 
@@ -79,6 +82,11 @@ class State {
   }
 
   isFormValid = () => this.form.valid;
+
+  feedHasItem = (id, item) => {
+    const { items } = this.getFeed(id);
+    return (items.findIndex(({ link }) => (link === item.link)) !== -1);
+  }
 }
 
 export default State;
