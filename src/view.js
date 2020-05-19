@@ -71,7 +71,6 @@ const init = (
   watch(state, 'form', () => {
     renderForm(state, form, formFeedbackElement);
   });
-  return Promise.resolve();
 };
 
 

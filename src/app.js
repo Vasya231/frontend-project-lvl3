@@ -16,11 +16,10 @@ export default () => {
     debug: true,
     resources: texts,
   }).then(() => {
-    init(state, elements).then(() => {
-      elements.form.addEventListener('submit', generateSubmitHandler(state));
-      const inputField = elements.form.querySelector('input[name="url"]');
-      inputField.addEventListener('input', generateInputHandler(state));
-      restartTimer(state);
-    });
+    init(state, elements);
+    elements.form.addEventListener('submit', generateSubmitHandler(state));
+    const inputField = elements.form.querySelector('input[name="url"]');
+    inputField.addEventListener('input', generateInputHandler(state));
+    restartTimer(state);
   });
 };
