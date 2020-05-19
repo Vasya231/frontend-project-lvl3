@@ -1,6 +1,5 @@
 import { watch } from 'melanke-watchjs';
 import i18 from 'i18next';
-import texts from './locales';
 
 const generateFeedElement = ({ title, description }) => {
   const el = document.createElement('div');
@@ -64,11 +63,7 @@ const init = (
     feedsColElement,
     itemsColElement,
   },
-) => i18.init({
-  lng: 'en',
-  debug: true,
-  resources: texts,
-}).then(() => {
+) => {
   form.reset();
   watch(state, 'feeds', () => {
     renderFeeds(state, feedsColElement, itemsColElement);
@@ -77,7 +72,7 @@ const init = (
     renderForm(state, form, formFeedbackElement);
   });
   return Promise.resolve();
-});
+};
 
 
 export default init;

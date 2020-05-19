@@ -1,3 +1,5 @@
+import i18 from 'i18next';
+import texts from './locales';
 import init from './view';
 import State from './State';
 import { generateInputHandler, generateSubmitHandler, restartTimer } from './controller';
@@ -9,10 +11,16 @@ export default () => {
   elements.feedsColElement = document.querySelector('div.rss-feeds');
   elements.itemsColElement = document.querySelector('div.rss-items');
   elements.formFeedbackElement = document.querySelector('div.feedback');
-  init(state, elements).then(() => {
-    elements.form.addEventListener('submit', generateSubmitHandler(state));
-    const inputField = elements.form.querySelector('input[name="url"]');
-    inputField.addEventListener('input', generateInputHandler(state));
-    restartTimer(state);
+  i18.init({
+    lng: 'en',
+    debug: true,
+    resources: texts,
+  }).then(() => {
+    init(state, elements).then(() => {
+      elements.form.addEventListener('submit', generateSubmitHandler(state));
+      const inputField = elements.form.querySelector('input[name="url"]');
+      inputField.addEventListener('input', generateInputHandler(state));
+      restartTimer(state);
+    });
   });
 };
