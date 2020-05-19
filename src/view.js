@@ -24,25 +24,22 @@ const generateItemElement = ({ title, link }) => {
 
 const getErrorMessage = (error) => i18.t(`errors.${error}`);
 
-const renderFeeds = (state) => {
-  const feedsColElement = document.querySelector('div.rss-feeds');
-  const itemsColElement = document.querySelector('div.rss-items');
+const renderFeeds = (state, feedsColElement, itemsColElement) => {
   feedsColElement.innerHTML = '';
   itemsColElement.innerHTML = '';
   state.getFeeds().forEach((feed) => feedsColElement.append(generateFeedElement(feed)));
   state.getItems().forEach((item) => itemsColElement.append(generateItemElement(item)));
 };
 
-const renderForm = (state) => {
-  const feedbackDiv = document.querySelector('div.feedback');
-  const submitButton = document.querySelector('button[type="submit"]');
-  const inputField = document.querySelector('input[name="url"]');
+const renderForm = (state, form, feedbackElement) => {
+  const submitButton = form.querySelector('button[type="submit"]');
+  const inputField = form.querySelector('input[name="url"]');
   const processState = state.getFormState();
   const error = state.getFormError();
   switch (processState) {
     case 'filling':
       submitButton.removeAttribute('disabled');
-      feedbackDiv.textContent = error ? getErrorMessage(error) : '';
+      feedbackElement.textContent = error ? getErrorMessage(error) : '';
       inputField.value = state.getFormValue();
       if (state.isFormValid()) {
         inputField.classList.remove('is-invalid');
@@ -52,29 +49,35 @@ const renderForm = (state) => {
       break;
     case 'sending':
       submitButton.setAttribute('disabled', '');
-      feedbackDiv.textContent = error ? getErrorMessage(error) : '';
+      feedbackElement.textContent = error ? getErrorMessage(error) : '';
       inputField.value = state.getFormValue();
       break;
     default: throw new Error(`Wrong state: ${processState}`);
   }
 };
 
-const init = (state, submitHandler, inputHandler, form, inputField) => {
-  i18.init({
-    lng: 'en',
-    debug: true,
-    resources: texts,
-  }).then(() => {
-    form.addEventListener('submit', submitHandler);
-    inputField.addEventListener('input', inputHandler);
-    form.reset();
-    watch(state, 'feeds', () => {
-      renderFeeds(state);
-    });
-    watch(state, 'form', () => {
-      renderForm(state);
-    });
+const init = (
+  state,
+  {
+    form,
+    formFeedbackElement,
+    feedsColElement,
+    itemsColElement,
+  },
+) => i18.init({
+  lng: 'en',
+  debug: true,
+  resources: texts,
+}).then(() => {
+  form.reset();
+  watch(state, 'feeds', () => {
+    renderFeeds(state, feedsColElement, itemsColElement);
   });
-};
+  watch(state, 'form', () => {
+    renderForm(state, form, formFeedbackElement);
+  });
+  return Promise.resolve();
+});
+
 
 export default init;
