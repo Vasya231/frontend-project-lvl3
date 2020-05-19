@@ -5,8 +5,10 @@ const generateListItem = (item) => {
   const title = item.querySelector('title').textContent;
   const description = item.querySelector('description').textContent;
   const link = item.querySelector('link').textContent;
+  const pubDateEl = item.querySelector('pubDate');
+  const pubDate = pubDateEl ? Date.parse(pubDateEl.textContent) : null;
   return {
-    title, link, description,
+    title, link, description, pubDate,
   };
 };
 

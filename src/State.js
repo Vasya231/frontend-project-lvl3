@@ -20,10 +20,10 @@ class State {
     return id;
   };
 
-  addItemToFeed = (feedId, title, description, link) => {
+  addItemToFeed = (feedId, title, description, link, pubDate) => {
     const id = uniqueId();
     const feed = this.getFeed(feedId);
-    const dateAdded = Date.now();
+    const dateAdded = pubDate || Date.now();
     feed.items.push({
       id, feedId, title, description, link, dateAdded,
     });
@@ -32,9 +32,10 @@ class State {
 
   addItemsToFeed = (feedId, items) => {
     const ids = [];
-    const itemsFromOldestToNewest = [...items].reverse();
-    itemsFromOldestToNewest.forEach(({ title, description, link }) => {
-      const id = this.addItemToFeed(feedId, title, description, link);
+    items.forEach(({
+      title, description, link, pubDate,
+    }) => {
+      const id = this.addItemToFeed(feedId, title, description, link, pubDate);
       ids.push(id);
     });
     return ids;
