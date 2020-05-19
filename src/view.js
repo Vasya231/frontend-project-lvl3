@@ -59,14 +59,12 @@ const renderForm = (state) => {
   }
 };
 
-const init = (state, submitHandler, inputHandler) => {
+const init = (state, submitHandler, inputHandler, form, inputField) => {
   i18.init({
     lng: 'en',
     debug: true,
     resources: texts,
   }).then(() => {
-    const inputField = document.querySelector('input[name="url"]');
-    const form = document.querySelector('form.rss-form');
     form.addEventListener('submit', submitHandler);
     inputField.addEventListener('input', inputHandler);
     form.reset();
