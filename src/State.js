@@ -3,6 +3,8 @@ import { uniqueId } from 'lodash';
 class State {
   feeds = [];
 
+  posts = [];
+
   form = {
     processState: 'filling',
     value: '',
@@ -22,9 +24,8 @@ class State {
 
   addItemToFeed = (feedId, title, description, link, pubDate) => {
     const id = uniqueId();
-    const feed = this.getFeed(feedId);
     const dateAdded = pubDate || Date.now();
-    feed.items.push({
+    this.posts.push({
       id, feedId, title, description, link, dateAdded,
     });
     return id;
@@ -54,11 +55,7 @@ class State {
 
   getFeeds = () => this.feeds;
 
-  getItems = () => this.getFeeds()
-    .reduce(
-      (acc, { items }) => [...acc, ...items],
-      [],
-    )
+  getItems = () => this.posts.slice()
     .sort(({ dateAdded: date1 }, { dateAdded: date2 }) => (date2 - date1));
 
   getFormValue = () => this.form.value;
@@ -86,7 +83,7 @@ class State {
   isFormValid = () => this.form.valid;
 
   feedHasItem = (id, item) => {
-    const { items } = this.getFeed(id);
+    const items = this.posts.filter(({ feedId }) => (feedId === id));
     return (items.findIndex(({ link }) => (link === item.link)) !== -1);
   }
 }

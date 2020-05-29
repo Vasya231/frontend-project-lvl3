@@ -65,7 +65,7 @@ const init = (
   },
 ) => {
   form.reset();
-  watch(state, 'feeds', () => {
+  watch(state, 'posts', () => {
     renderFeeds(state, feedsColElement, itemsColElement);
   });
   watch(state, 'form', () => {
