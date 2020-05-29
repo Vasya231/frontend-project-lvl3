@@ -23,24 +23,28 @@ const generateItemElement = ({ title, link }) => {
 
 const getErrorMessage = (error) => i18.t(`errors.${error}`);
 
-const renderFeeds = (state, feedsColElement, itemsColElement) => {
+const renderFeeds = ({ feeds, posts }, feedsColElement, itemsColElement) => {
   feedsColElement.innerHTML = '';
   itemsColElement.innerHTML = '';
-  state.getFeeds().forEach((feed) => feedsColElement.append(generateFeedElement(feed)));
-  state.getItems().forEach((item) => itemsColElement.append(generateItemElement(item)));
+  const sortedPosts = [...posts].sort(
+    ({ dateAdded: date1 }, { dateAdded: date2 }) => (date2 - date1),
+  );
+  feeds.forEach((feed) => feedsColElement.append(generateFeedElement(feed)));
+  sortedPosts.forEach((item) => itemsColElement.append(generateItemElement(item)));
 };
 
 const renderForm = (state, form, feedbackElement) => {
   const submitButton = form.querySelector('button[type="submit"]');
   const inputField = form.querySelector('input[name="url"]');
-  const processState = state.getFormState();
-  const error = state.getFormError();
+  const {
+    processState, error, value, valid,
+  } = state.form;
+  inputField.value = value;
   switch (processState) {
     case 'filling':
       submitButton.removeAttribute('disabled');
       feedbackElement.textContent = error ? getErrorMessage(error) : '';
-      inputField.value = state.getFormValue();
-      if (state.isFormValid()) {
+      if (valid) {
         inputField.classList.remove('is-invalid');
       } else {
         inputField.classList.add('is-invalid');
@@ -49,7 +53,6 @@ const renderForm = (state, form, feedbackElement) => {
     case 'sending':
       submitButton.setAttribute('disabled', '');
       feedbackElement.textContent = error ? getErrorMessage(error) : '';
-      inputField.value = state.getFormValue();
       break;
     default: throw new Error(`Wrong state: ${processState}`);
   }
