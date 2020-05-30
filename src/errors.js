@@ -6,6 +6,7 @@ const errors = {
   alreadyAdded: 'alreadyAdded',
   'Network Error': 'networkError',
   'Request failed with status code 429': 'tooManyRequests',
+  'Request failed with status code 503': 'serviceTemporaryUnavailable',
 };
 
 errors[`timeout of ${settings.responseTimeout}ms exceeded`] = 'timeoutError';
