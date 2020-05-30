@@ -1,5 +1,3 @@
-import * as yup from 'yup';
-
 const generateListItem = (item) => {
   // console.log(item);
   const title = item.querySelector('title').textContent;
@@ -26,19 +24,6 @@ const parseRss = (data) => {
   }
 };
 
-const schema = yup.object().shape({
-  url: yup.string().required().url(),
-});
-
 const proxifyUrl = (url) => `https://cors-anywhere.herokuapp.com/${url}`;
 
-const isValidUrl = (string) => {
-  try {
-    schema.validateSync({ url: string });
-    return true;
-  } catch {
-    return false;
-  }
-};
-
-export { parseRss, isValidUrl, proxifyUrl };
+export { parseRss, proxifyUrl };

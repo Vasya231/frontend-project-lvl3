@@ -1,9 +1,10 @@
 import i18 from 'i18next';
 import axios from 'axios';
+import * as yup from 'yup';
 import { uniqueId } from 'lodash';
 import texts from './locales';
 import init from './view';
-import { parseRss, isValidUrl, proxifyUrl } from './utils';
+import { parseRss, proxifyUrl } from './utils';
 import getErrorType from './errors';
 import settings from './settings';
 
@@ -47,16 +48,7 @@ const updateFeed = (state, feedId) => {
 const generateSubmitHandler = (state) => (event) => {
   event.preventDefault();
   const formValue = state.form.value;
-  if (!isValidUrl(formValue)) {
-    state.form.error = 'notUrl';
-    return;
-  }
   const rssLink = new URL(formValue).href;
-  const { feeds } = state;
-  if (feeds.findIndex(({ link }) => (link === rssLink)) !== -1) {
-    state.form.error = 'alreadyAdded';
-    return;
-  }
   state.form.processState = 'sending';
   loadRss(rssLink)
     .then((parsedRss) => {
@@ -86,11 +78,34 @@ const generateSubmitHandler = (state) => (event) => {
     });
 };
 
-const generateInputHandler = (state) => (event) => {
-  event.preventDefault();
-  const { value } = event.target;
-  state.form.value = value;
-  state.form.valid = isValidUrl(value) || (value === '');
+const generateValidationSchema = (state) => {
+  const isUnique = (str) => {
+    const rssLink = new URL(str).href;
+    const { feeds } = state;
+    return (feeds.findIndex(({ link }) => (link === rssLink)) === -1);
+  };
+  const schema = yup.object().shape({
+    url: yup.string().required().url().test('alreadyAdded', 'alreadyAdded', isUnique),
+  });
+  return schema;
+};
+
+const generateInputHandler = (state) => {
+  const validationSchema = generateValidationSchema(state);
+  const isValid = (string) => {
+    try {
+      validationSchema.validateSync({ url: string });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  return (event) => {
+    event.preventDefault();
+    const { value } = event.target;
+    state.form.value = value;
+    state.form.valid = isValid(value) || (value === '');
+  };
 };
 
 export default () => {
