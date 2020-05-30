@@ -114,7 +114,7 @@ export default () => {
     posts: [],
     form: {
       processState: 'filling',
-      value: '',
+      value: null,
       error: '',
       valid: true,
     },
@@ -130,6 +130,7 @@ export default () => {
     resources: texts,
   }).then(() => {
     initWatchers(state, elements);
+    state.form.value = '';
     elements.form.addEventListener('submit', generateSubmitHandler(state));
     const inputField = elements.form.querySelector('input[name="url"]');
     inputField.addEventListener('input', generateInputHandler(state));

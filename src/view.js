@@ -74,6 +74,7 @@ const initWatchers = (
   watch(state, 'form', () => {
     renderForm(state, form, formFeedbackElement);
   });
+  // renderForm(state, form, formFeedbackElement);
 };
 
 
