@@ -59,7 +59,7 @@ const renderForm = (state, form, feedbackElement) => {
   }
 };
 
-const init = (
+const initWatchers = (
   state,
   {
     form,
@@ -77,4 +77,4 @@ const init = (
 };
 
 
-export default init;
+export default initWatchers;

@@ -3,7 +3,7 @@ import axios from 'axios';
 import * as yup from 'yup';
 import { uniqueId } from 'lodash';
 import texts from './locales';
-import init from './view';
+import initWatchers from './view';
 import { parseRss, proxifyUrl } from './utils';
 import getErrorType from './errors';
 import settings from './settings';
@@ -129,7 +129,7 @@ export default () => {
     debug: true,
     resources: texts,
   }).then(() => {
-    init(state, elements);
+    initWatchers(state, elements);
     elements.form.addEventListener('submit', generateSubmitHandler(state));
     const inputField = elements.form.querySelector('input[name="url"]');
     inputField.addEventListener('input', generateInputHandler(state));
