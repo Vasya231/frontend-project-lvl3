@@ -48,6 +48,7 @@ const renderForm = (state, form, feedbackElement) => {
         inputField.classList.remove('is-invalid');
       } else {
         inputField.classList.add('is-invalid');
+        submitButton.setAttribute('disabled', '');
       }
       break;
     case 'sending':
