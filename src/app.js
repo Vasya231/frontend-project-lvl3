@@ -10,10 +10,6 @@ import settings from './settings';
 const loadRss = (rssLink) => axios
   .get(proxifyUrl(rssLink), { timeout: settings.responseTimeout })
   .then((response) => {
-    const isRss = response.headers['content-type'].includes('application/rss+xml');
-    if (!isRss) {
-      throw new Error('notRss');
-    }
     const parsedObj = parseRss(response.data);
     return Promise.resolve(parsedObj);
   });
@@ -92,9 +88,7 @@ const generateSubmitHandler = (state) => (event) => {
 
 const generateInputHandler = (state) => (event) => {
   event.preventDefault();
-  const form = event.target.closest('form.rss-form');
-  const formData = new FormData(form);
-  const value = formData.get('url');
+  const { value } = event.target;
   state.form.value = value;
   state.form.valid = isValidUrl(value) || (value === '');
 };

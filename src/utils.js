@@ -13,13 +13,17 @@ const generateListItem = (item) => {
 };
 
 const parseRss = (data) => {
-  const parser = new DOMParser();
-  const xml = parser.parseFromString(data, 'text/xml');
-  const title = xml.querySelector('channel > title').textContent;
-  const description = xml.querySelector('channel > description').textContent;
-  const itemsXml = xml.querySelectorAll('channel > item');
-  const items = [...itemsXml].map(generateListItem);
-  return { title, description, items };
+  try {
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(data, 'text/xml');
+    const title = xml.querySelector('channel > title').textContent;
+    const description = xml.querySelector('channel > description').textContent;
+    const itemsXml = xml.querySelectorAll('channel > item');
+    const items = [...itemsXml].map(generateListItem);
+    return { title, description, items };
+  } catch {
+    throw new Error('notRss');
+  }
 };
 
 const schema = yup.object().shape({
