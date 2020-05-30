@@ -24,37 +24,27 @@ const addItemToFeed = (state, feedId, {
   });
 };
 
-const updateFeed = (state, feedId, link, title, description, items) => {
+const updateFeed = (state, feedId) => {
   const feed = state.feeds.find(({ id }) => (feedId === id));
-  feed.link = link;
-  feed.title = title;
-  feed.description = description;
-  const oldItems = state.posts.filter(({ feedId: currentFeedId }) => (feedId === currentFeedId));
-  const feedHasItem = (item) => (
-    oldItems.findIndex(({ link: currentLink }) => (currentLink === item.link)) !== -1
-  );
-  const newItems = items.filter((item) => !(feedHasItem(item)));
-  newItems.forEach((item) => addItemToFeed(state, feedId, item));
-};
-
-const updateFeeds = (state) => {
-  const { feeds } = state;
-  const updatePromises = feeds.map(({ id, link }) => {
-    const promise = loadRss(link).then((parsedRss) => {
-      const {
-        title, description, items,
-      } = parsedRss;
-      updateFeed(state, id, link, title, description, items);
-    });
-    return (promise.catch((e) => {
-      console.log(`ERROR while updating feed ${link}:`, e);
-    }));
+  const { link } = feed;
+  loadRss(link).then((parsedRss) => {
+    const {
+      title, description, items,
+    } = parsedRss;
+    feed.link = link;
+    feed.title = title;
+    feed.description = description;
+    const oldItems = state.posts.filter(({ feedId: currentFeedId }) => (feedId === currentFeedId));
+    const feedHasItem = (item) => (
+      oldItems.findIndex(({ link: currentLink }) => (currentLink === item.link)) !== -1
+    );
+    const newItems = items.filter((item) => !(feedHasItem(item)));
+    newItems.forEach((item) => addItemToFeed(state, feedId, item));
+    setTimeout(() => updateFeed(state, feedId), settings.refreshTimeout);
+  }).catch((e) => {
+    console.log(`ERROR while updating feed ${link}:`, e);
+    setTimeout(() => updateFeed(state, feedId), settings.refreshTimeout);
   });
-  return Promise.all(updatePromises);
-};
-
-const restartTimer = (state) => {
-  setTimeout(() => updateFeeds(state).then(() => restartTimer(state)), settings.refreshTimeout);
 };
 
 const generateSubmitHandler = (state) => (event) => {
@@ -86,6 +76,7 @@ const generateSubmitHandler = (state) => (event) => {
       state.form.error = '';
       state.form.processState = 'filling';
       state.form.valid = true;
+      setTimeout(() => updateFeed(state, id), settings.refreshTimeout);
     })
     .catch((error) => {
       state.form.processState = 'filling';
@@ -107,4 +98,4 @@ const generateInputHandler = (state) => (event) => {
   state.form.valid = isValidUrl(value) || (value === '');
 };
 
-export { restartTimer, generateInputHandler, generateSubmitHandler };
+export { generateInputHandler, generateSubmitHandler };

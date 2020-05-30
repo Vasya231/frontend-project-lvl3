@@ -1,7 +1,7 @@
 import i18 from 'i18next';
 import texts from './locales';
 import init from './view';
-import { generateInputHandler, generateSubmitHandler, restartTimer } from './controller';
+import { generateInputHandler, generateSubmitHandler } from './controller';
 
 export default () => {
   const state = {
@@ -28,6 +28,5 @@ export default () => {
     elements.form.addEventListener('submit', generateSubmitHandler(state));
     const inputField = elements.form.querySelector('input[name="url"]');
     inputField.addEventListener('input', generateInputHandler(state));
-    restartTimer(state);
   });
 };
