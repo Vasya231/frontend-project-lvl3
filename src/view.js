@@ -1,5 +1,5 @@
 import { watch } from 'melanke-watchjs';
-import i18 from 'i18next';
+import i18next from 'i18next';
 
 const generateFeedElement = ({ title, description }) => {
   const el = document.createElement('div');
@@ -21,7 +21,7 @@ const generateItemElement = ({ title, link }) => {
   return el;
 };
 
-const getErrorMessage = (error) => i18.t(`errors.${error}`);
+const getErrorMessage = (error) => i18next.t(`errors.${error}`);
 
 const renderFeeds = ({ feeds, posts }, feedsColElement, itemsColElement) => {
   feedsColElement.innerHTML = '';

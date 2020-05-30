@@ -1,4 +1,4 @@
-import i18 from 'i18next';
+import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
 import { uniqueId } from 'lodash';
@@ -124,7 +124,7 @@ export default () => {
   elements.feedsColElement = document.querySelector('div.rss-feeds');
   elements.itemsColElement = document.querySelector('div.rss-items');
   elements.formFeedbackElement = document.querySelector('div.feedback');
-  i18.init({
+  i18next.init({
     lng: 'en',
     debug: true,
     resources: texts,
