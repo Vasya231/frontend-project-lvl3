@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { uniqueId } from 'lodash';
 import { parseRss, isValidUrl, proxifyUrl } from './utils';
 import getErrorType from './errors';
 import settings from './settings';
@@ -14,14 +15,36 @@ const loadRss = (rssLink) => axios
     return Promise.resolve(parsedObj);
   });
 
+const addItemToFeed = (state, feedId, {
+  title, description, link, pubDate,
+}) => {
+  const dateAdded = pubDate || Date.now();
+  state.posts.push({
+    feedId, title, description, link, dateAdded,
+  });
+};
+
+const updateFeed = (state, feedId, link, title, description, items) => {
+  const feed = state.feeds.find(({ id }) => (feedId === id));
+  feed.link = link;
+  feed.title = title;
+  feed.description = description;
+  const oldItems = state.posts.filter(({ feedId: currentFeedId }) => (feedId === currentFeedId));
+  const feedHasItem = (item) => (
+    oldItems.findIndex(({ link: currentLink }) => (currentLink === item.link)) !== -1
+  );
+  const newItems = items.filter((item) => !(feedHasItem(item)));
+  newItems.forEach((item) => addItemToFeed(state, feedId, item));
+};
+
 const updateFeeds = (state) => {
-  const feeds = state.getFeeds();
+  const { feeds } = state;
   const updatePromises = feeds.map(({ id, link }) => {
     const promise = loadRss(link).then((parsedRss) => {
       const {
         title, description, items,
       } = parsedRss;
-      state.updateFeed(id, link, title, description, items);
+      updateFeed(state, id, link, title, description, items);
     });
     return (promise.catch((e) => {
       console.log(`ERROR while updating feed ${link}:`, e);
@@ -36,33 +59,38 @@ const restartTimer = (state) => {
 
 const generateSubmitHandler = (state) => (event) => {
   event.preventDefault();
-  const formValue = state.getFormValue();
+  const formValue = state.form.value;
   if (!isValidUrl(formValue)) {
-    state.setFormError('notUrl');
+    state.form.error = 'notUrl';
     return;
   }
   const rssLink = new URL(formValue).href;
-  const feeds = state.getFeeds();
+  const { feeds } = state;
   if (feeds.findIndex(({ link }) => (link === rssLink)) !== -1) {
-    state.setFormError('alreadyAdded');
+    state.form.error = 'alreadyAdded';
     return;
   }
-  state.setFormState('sending');
+  state.form.processState = 'sending';
   loadRss(rssLink)
     .then((parsedRss) => {
       const {
         title, description, items,
       } = parsedRss;
-      state.addFeed(rssLink, title, description, items);
-      state.setFormValue('');
-      state.setFormError('');
-      state.setFormState('filling');
-      state.setFormValidity(true);
+      const id = uniqueId();
+      const newFeed = {
+        id, link: rssLink, title, description, items: [],
+      };
+      state.feeds.push(newFeed);
+      items.forEach((item) => addItemToFeed(state, id, item));
+      state.form.value = '';
+      state.form.error = '';
+      state.form.processState = 'filling';
+      state.form.valid = true;
     })
     .catch((error) => {
-      state.setFormState('filling');
+      state.form.processState = 'filling';
       const errorType = getErrorType(error);
-      state.setFormError(errorType);
+      state.form.error = errorType;
       if (errorType === 'unknownError') {
         console.log('Unexpected error occured:');
         console.log(error);
@@ -75,8 +103,8 @@ const generateInputHandler = (state) => (event) => {
   const form = event.target.closest('form.rss-form');
   const formData = new FormData(form);
   const value = formData.get('url');
-  state.setFormValue(value);
-  state.setFormValidity(isValidUrl(value) || (value === ''));
+  state.form.value = value;
+  state.form.valid = isValidUrl(value) || (value === '');
 };
 
 export { restartTimer, generateInputHandler, generateSubmitHandler };

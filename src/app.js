@@ -1,11 +1,19 @@
 import i18 from 'i18next';
 import texts from './locales';
 import init from './view';
-import State from './State';
 import { generateInputHandler, generateSubmitHandler, restartTimer } from './controller';
 
 export default () => {
-  const state = new State();
+  const state = {
+    feeds: [],
+    posts: [],
+    form: {
+      processState: 'filling',
+      value: '',
+      error: '',
+      valid: true,
+    },
+  };
   const elements = {};
   elements.form = document.querySelector('form.rss-form');
   elements.feedsColElement = document.querySelector('div.rss-feeds');
