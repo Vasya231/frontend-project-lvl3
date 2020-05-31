@@ -1,7 +1,7 @@
 import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
-import { uniqueId } from 'lodash';
+import { uniqueId, differenceWith } from 'lodash';
 import texts from './locales';
 import initWatchers from './view';
 import { parseRss, proxifyUrl } from './utils';
@@ -19,14 +19,15 @@ const loadRss = (rssLink) => axios
     }
   });
 
-const addItemToFeed = (state, feedId, {
+const generatePost = (feedId, {
   title, description, link, pubDate,
-}) => {
-  const dateAdded = pubDate || Date.now();
-  state.posts.push({
-    feedId, title, description, link, dateAdded,
-  });
-};
+}) => ({
+  feedId,
+  title,
+  description,
+  link,
+  dateAdded: (pubDate || Date.now()),
+});
 
 const updateFeed = (state, feedId) => {
   const feed = state.feeds.find(({ id }) => (feedId === id));
@@ -38,12 +39,12 @@ const updateFeed = (state, feedId) => {
     feed.link = link;
     feed.title = title;
     feed.description = description;
-    const oldItems = state.posts.filter(({ feedId: currentFeedId }) => (feedId === currentFeedId));
-    const feedHasItem = (item) => (
-      oldItems.findIndex(({ link: currentLink }) => (currentLink === item.link)) !== -1
-    );
-    const newItems = items.filter((item) => !(feedHasItem(item)));
-    newItems.forEach((item) => addItemToFeed(state, feedId, item));
+    const posts = items.map(generatePost.bind(null, feedId));
+    const newPosts = differenceWith(posts, state.posts,
+      ({ feedId: id1, link: link1 }, { feedId: id2, link: link2 }) => (
+        (id1 === id2) && (link1 === link2)
+      ));
+    state.posts.push(...newPosts);
   }).catch((e) => {
     console.log(`ERROR while updating feed ${link}:`, e);
   }).then(() => setTimeout(() => updateFeed(state, feedId), settings.refreshTimeout));
@@ -66,7 +67,8 @@ const generateSubmitHandler = (state) => (event) => {
         id, link: rssLink, title, description, items: [],
       };
       state.feeds.push(newFeed);
-      items.forEach((item) => addItemToFeed(state, id, item));
+      const posts = items.map(generatePost.bind(null, id));
+      state.posts.push(...posts);
       // eslint-disable-next-line no-param-reassign
       state.form.value = '';
       // eslint-disable-next-line no-param-reassign
@@ -134,11 +136,12 @@ export default () => {
       valid: true,
     },
   };
-  const elements = {};
-  elements.form = document.querySelector('form.rss-form');
-  elements.feedsColElement = document.querySelector('div.rss-feeds');
-  elements.itemsColElement = document.querySelector('div.rss-items');
-  elements.formFeedbackElement = document.querySelector('div.feedback');
+  const elements = {
+    form: document.querySelector('form.rss-form'),
+    feedsColElement: document.querySelector('div.rss-feeds'),
+    itemsColElement: document.querySelector('div.rss-items'),
+    formFeedbackElement: document.querySelector('div.feedback'),
+  };
   i18next.init({
     lng: 'en',
     debug: true,
