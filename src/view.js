@@ -24,7 +24,9 @@ const generateItemElement = ({ title, link }) => {
 const getErrorMessage = (error) => i18next.t(`errors.${error}`);
 
 const renderFeeds = ({ feeds, posts }, feedsColElement, itemsColElement) => {
+  // eslint-disable-next-line no-param-reassign
   feedsColElement.innerHTML = '';
+  // eslint-disable-next-line no-param-reassign
   itemsColElement.innerHTML = '';
   const sortedPosts = [...posts].sort(
     ({ dateAdded: date1 }, { dateAdded: date2 }) => (date2 - date1),
@@ -43,6 +45,7 @@ const renderForm = (state, form, feedbackElement) => {
   switch (processState) {
     case 'filling':
       submitButton.removeAttribute('disabled');
+      // eslint-disable-next-line no-param-reassign
       feedbackElement.textContent = error ? getErrorMessage(error) : '';
       if (valid) {
         inputField.classList.remove('is-invalid');
@@ -53,6 +56,7 @@ const renderForm = (state, form, feedbackElement) => {
       break;
     case 'sending':
       submitButton.setAttribute('disabled', '');
+      // eslint-disable-next-line no-param-reassign
       feedbackElement.textContent = error ? getErrorMessage(error) : '';
       break;
     default: throw new Error(`Wrong state: ${processState}`);
@@ -74,7 +78,7 @@ const initWatchers = (
   watch(state, 'form', () => {
     renderForm(state, form, formFeedbackElement);
   });
-  // renderForm(state, form, formFeedbackElement);
+  renderForm(state, form, formFeedbackElement);
 };
 
 

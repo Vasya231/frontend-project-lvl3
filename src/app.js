@@ -50,6 +50,7 @@ const generateSubmitHandler = (state) => (event) => {
   const formValue = state.form.value;
   const url = new URL(formValue);
   const rssLink = url.href;
+  // eslint-disable-next-line no-param-reassign
   state.form.processState = 'sending';
   loadRss(rssLink)
     .then((parsedRss) => {
@@ -62,15 +63,21 @@ const generateSubmitHandler = (state) => (event) => {
       };
       state.feeds.push(newFeed);
       items.forEach((item) => addItemToFeed(state, id, item));
+      // eslint-disable-next-line no-param-reassign
       state.form.value = '';
+      // eslint-disable-next-line no-param-reassign
       state.form.error = '';
+      // eslint-disable-next-line no-param-reassign
       state.form.processState = 'filling';
+      // eslint-disable-next-line no-param-reassign
       state.form.valid = true;
       setTimeout(() => updateFeed(state, id), settings.refreshTimeout);
     })
     .catch((error) => {
+      // eslint-disable-next-line no-param-reassign
       state.form.processState = 'filling';
       const errorType = getErrorType(error);
+      // eslint-disable-next-line no-param-reassign
       state.form.error = errorType;
       if (errorType === 'unknownError') {
         console.log('Unexpected error occured:');
@@ -105,7 +112,9 @@ const generateInputHandler = (state) => {
   return (event) => {
     event.preventDefault();
     const { value } = event.target;
+    // eslint-disable-next-line no-param-reassign
     state.form.value = value;
+    // eslint-disable-next-line no-param-reassign
     state.form.valid = isValid(value) || (value === '');
   };
 };
@@ -116,7 +125,7 @@ export default () => {
     posts: [],
     form: {
       processState: 'filling',
-      value: null,
+      value: '',
       error: '',
       valid: true,
     },
@@ -132,7 +141,6 @@ export default () => {
     resources: texts,
   }).then(() => {
     initWatchers(state, elements);
-    state.form.value = '';
     elements.form.addEventListener('submit', generateSubmitHandler(state));
     const inputField = elements.form.querySelector('input[name="url"]');
     inputField.addEventListener('input', generateInputHandler(state));
