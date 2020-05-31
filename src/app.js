@@ -11,8 +11,12 @@ import settings from './settings';
 const loadRss = (rssLink) => axios
   .get(proxifyUrl(rssLink), { timeout: settings.responseTimeout })
   .then((response) => {
-    const parsedObj = parseRss(response.data);
-    return Promise.resolve(parsedObj);
+    try {
+      const parsedObj = parseRss(response.data);
+      return parsedObj;
+    } catch {
+      throw new Error('notRss');
+    }
   });
 
 const addItemToFeed = (state, feedId, {
