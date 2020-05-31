@@ -48,7 +48,8 @@ const updateFeed = (state, feedId) => {
 const generateSubmitHandler = (state) => (event) => {
   event.preventDefault();
   const formValue = state.form.value;
-  const rssLink = new URL(formValue).href;
+  const url = new URL(formValue);
+  const rssLink = url.href;
   state.form.processState = 'sending';
   loadRss(rssLink)
     .then((parsedRss) => {
@@ -80,7 +81,8 @@ const generateSubmitHandler = (state) => (event) => {
 
 const generateValidationSchema = (state) => {
   const isUnique = (str) => {
-    const rssLink = new URL(str).href;
+    const url = new URL(str);
+    const rssLink = url.href;
     const { feeds } = state;
     return (feeds.findIndex(({ link }) => (link === rssLink)) === -1);
   };
