@@ -74,7 +74,7 @@ const generateSubmitHandler = (state) => (event) => {
       // eslint-disable-next-line no-param-reassign
       state.form.value = '';
       // eslint-disable-next-line no-param-reassign
-      state.form.fillingProcess.processState = 'empty';
+      state.form.fillingProcess.valueValidationState = 'empty';
       setTimeout(() => updateFeed(state, id), settings.refreshTimeout);
     })
     .catch((error) => {
