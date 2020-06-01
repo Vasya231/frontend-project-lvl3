@@ -5,8 +5,9 @@ const errors = {
   notRss: 'notRss',
   alreadyAdded: 'alreadyAdded',
   'Network Error': 'networkError',
-  'Request failed with status code 429': 'tooManyRequests',
-  'Request failed with status code 503': 'serviceTemporaryUnavailable',
+  'Request failed with status code 429': 'code429',
+  'Request failed with status code 503': 'code503',
+  'Request failed with status code 404': 'code404',
 };
 
 errors[`timeout of ${settings.responseTimeout}ms exceeded`] = 'timeoutError';

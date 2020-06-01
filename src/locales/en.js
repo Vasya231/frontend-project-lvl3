@@ -5,10 +5,11 @@ export default {
       notRss: 'Error: not an RSS feed',
       alreadyAdded: 'Error: feed is already in list',
       networkError: 'Error: network error',
-      tooManyRequests: 'Error: Too many requests (code 429)',
+      code429: 'Error: Too many requests (code 429)',
       timeoutError: 'Error: response wait timeout exceeded',
       unknownError: 'Unknown error',
-      serviceTemporaryUnavailable: 'Error: Service Temporarily Unavailable (code 503)',
+      code503: 'Error: Service Temporarily Unavailable (code 503)',
+      code404: 'Error: 404',
     },
   },
 };
