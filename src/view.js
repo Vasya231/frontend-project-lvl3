@@ -35,31 +35,43 @@ const renderFeeds = ({ feeds, posts }, feedsColElement, itemsColElement) => {
   sortedPosts.forEach((item) => itemsColElement.append(generateItemElement(item)));
 };
 
-const renderForm = (state, form, feedbackElement) => {
-  const submitButton = form.querySelector('button[type="submit"]');
-  const inputField = form.querySelector('input[name="url"]');
-  const {
-    processState, error, value, valid,
-  } = state.form;
+const renderForm = (state, formEl, feedbackElement) => {
+  const submitButton = formEl.querySelector('button[type="submit"]');
+  const inputField = formEl.querySelector('input[name="url"]');
+  const { form, addingFeedProcess } = state;
+  const { fillingProcess, value } = form;
   inputField.value = value;
-  switch (processState) {
-    case 'filling':
-      submitButton.removeAttribute('disabled');
-      // eslint-disable-next-line no-param-reassign
-      feedbackElement.textContent = error ? getErrorMessage(error) : '';
-      if (valid) {
-        inputField.classList.remove('is-invalid');
-      } else {
-        inputField.classList.add('is-invalid');
-        submitButton.setAttribute('disabled', '');
-      }
-      break;
-    case 'sending':
+  switch (fillingProcess.processState) {
+    case 'empty':
       submitButton.setAttribute('disabled', '');
-      // eslint-disable-next-line no-param-reassign
-      feedbackElement.textContent = error ? getErrorMessage(error) : '';
+      inputField.classList.remove('is-invalid');
       break;
-    default: throw new Error(`Wrong state: ${processState}`);
+    case 'valid':
+      submitButton.removeAttribute('disabled');
+      inputField.classList.remove('is-invalid');
+      break;
+    case 'invalid':
+      submitButton.setAttribute('disabled', '');
+      inputField.classList.add('is-invalid');
+      // Вывести fillingProcess.error, если есть куда.
+      break;
+    default: throw new Error(`Wrong filling state: ${fillingProcess.processState}`);
+  }
+  switch (addingFeedProcess.processState) {
+    case 'stopped':
+      // eslint-disable-next-line no-param-reassign
+      feedbackElement.textContent = '';
+      break;
+    case 'stoppedWithError':
+      // eslint-disable-next-line no-param-reassign
+      feedbackElement.textContent = getErrorMessage(addingFeedProcess.error);
+      break;
+    case 'working':
+      // eslint-disable-next-line no-param-reassign
+      feedbackElement.textContent = '';
+      submitButton.setAttribute('disabled', '');
+      break;
+    default: throw new Error(`Wrong filling state: ${addingFeedProcess.processState}`);
   }
 };
 
@@ -75,7 +87,7 @@ const initWatchers = (
   watch(state, 'posts', () => {
     renderFeeds(state, feedsColElement, itemsColElement);
   });
-  watch(state, 'form', () => {
+  watch(state, ['form', 'addingFeedProcess'], () => {
     renderForm(state, form, formFeedbackElement);
   });
   renderForm(state, form, formFeedbackElement);

@@ -56,7 +56,7 @@ const generateSubmitHandler = (state) => (event) => {
   const url = new URL(formValue);
   const rssLink = url.href;
   // eslint-disable-next-line no-param-reassign
-  state.form.processState = 'sending';
+  state.addingFeedProcess.processState = 'working';
   loadRss(rssLink)
     .then((parsedRss) => {
       const {
@@ -70,21 +70,19 @@ const generateSubmitHandler = (state) => (event) => {
       const posts = items.map(generatePost.bind(null, id));
       state.posts.push(...posts);
       // eslint-disable-next-line no-param-reassign
+      state.addingFeedProcess.processState = 'stopped';
+      // eslint-disable-next-line no-param-reassign
       state.form.value = '';
       // eslint-disable-next-line no-param-reassign
-      state.form.error = '';
-      // eslint-disable-next-line no-param-reassign
-      state.form.processState = 'filling';
-      // eslint-disable-next-line no-param-reassign
-      state.form.valid = true;
+      state.form.fillingProcess.processState = 'empty';
       setTimeout(() => updateFeed(state, id), settings.refreshTimeout);
     })
     .catch((error) => {
       // eslint-disable-next-line no-param-reassign
-      state.form.processState = 'filling';
+      state.addingFeedProcess.processState = 'stoppedWithError';
       const errorType = getErrorType(error);
       // eslint-disable-next-line no-param-reassign
-      state.form.error = errorType;
+      state.addingFeedProcess.error = errorType;
       if (errorType === 'unknownError') {
         console.log('Unexpected error occured:');
         console.log(error);
@@ -120,8 +118,18 @@ const generateInputHandler = (state) => {
     const { value } = event.target;
     // eslint-disable-next-line no-param-reassign
     state.form.value = value;
-    // eslint-disable-next-line no-param-reassign
-    state.form.valid = isValid(value) || (value === '');
+    if (value === '') {
+      // eslint-disable-next-line no-param-reassign
+      state.form.fillingProcess.processState = 'empty';
+    } else if (isValid(value)) {
+      // eslint-disable-next-line no-param-reassign
+      state.form.fillingProcess.processState = 'valid';
+    } else {
+      // eslint-disable-next-line no-param-reassign
+      state.form.fillingProcess.processState = 'invalid';
+      // eslint-disable-next-line no-param-reassign
+      state.form.fillingProcess.error = 'doesnt matter';
+    }
   };
 };
 
@@ -130,10 +138,15 @@ export default () => {
     feeds: [],
     posts: [],
     form: {
-      processState: 'filling',
+      fillingProcess: {
+        processState: 'empty',
+        error: '',
+      },
       value: '',
+    },
+    addingFeedProcess: {
+      processState: 'stopped',
       error: '',
-      valid: true,
     },
   };
   const elements = {
