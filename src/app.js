@@ -5,17 +5,24 @@ import { uniqueId, differenceWith } from 'lodash';
 import texts from './locales';
 import initWatchers from './view';
 import { parseRss, proxifyUrl } from './utils';
-import getErrorType from './errors';
 import settings from './settings';
 
 const loadRss = (rssLink) => axios
   .get(proxifyUrl(rssLink), { timeout: settings.responseTimeout })
+  .catch((error) => {
+    const { response } = error;
+    if (response) {
+      throw new Error(response.status);
+    } else {
+      throw new Error('axiosDefault');
+    }
+  })
   .then((response) => {
     try {
       const parsedObj = parseRss(response.data);
       return parsedObj;
     } catch {
-      throw new Error('notRss');
+      throw new Error('parserError');
     }
   });
 
@@ -80,13 +87,9 @@ const generateSubmitHandler = (state) => (event) => {
     .catch((error) => {
       // eslint-disable-next-line no-param-reassign
       state.addingFeedProcess.processState = 'stoppedWithError';
-      const errorType = getErrorType(error);
+      const { message } = error;
       // eslint-disable-next-line no-param-reassign
-      state.addingFeedProcess.error = errorType;
-      if (errorType === 'unknownError') {
-        console.log('Unexpected error occured:');
-        console.log(error);
-      }
+      state.addingFeedProcess.error = message;
     });
 };
 

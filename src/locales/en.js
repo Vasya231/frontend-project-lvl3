@@ -1,15 +1,12 @@
 export default {
   translation: {
     errors: {
-      notUrl: 'Error: not a valid url',
-      notRss: 'Error: not an RSS feed',
-      alreadyAdded: 'Error: feed is already in list',
-      networkError: 'Error: network error',
-      code429: 'Error: Too many requests (code 429)',
-      timeoutError: 'Error: response wait timeout exceeded',
+      parserError: 'Error: not an RSS feed',
+      429: 'Error: Too many requests (code 429)',
+      axiosDefault: 'Error: response wait timeout exceeded',
       unknownError: 'Unknown error',
-      code503: 'Error: Service Temporarily Unavailable (code 503)',
-      code404: 'Error: 404',
+      503: 'Error: Service Temporarily Unavailable (code 503)',
+      404: 'Error: 404',
     },
   },
 };

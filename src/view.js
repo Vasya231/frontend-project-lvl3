@@ -21,7 +21,7 @@ const generateItemElement = ({ title, link }) => {
   return el;
 };
 
-const getErrorMessage = (error) => i18next.t(`errors.${error}`);
+const getErrorMessage = (error) => i18next.t(`errors.${error}`, 'errors.unknownError');
 
 const renderFeeds = ({ feeds, posts }, feedsColElement, itemsColElement) => {
   // eslint-disable-next-line no-param-reassign
