@@ -95,9 +95,13 @@ const generateSubmitHandler = (state) => (event) => {
 
 const validateUrl = (feeds, string) => {
   const isUnique = (str) => {
-    const url = new URL(str);
-    const rssLink = url.href;
-    return (feeds.findIndex(({ link }) => (link === rssLink)) === -1);
+    try {
+      const url = new URL(str);
+      const rssLink = url.href;
+      return (feeds.findIndex(({ link }) => (link === rssLink)) === -1);
+    } catch {
+      return false;
+    }
   };
   const validationSchema = yup.string().required().url('notUrl').test('alreadyAdded', 'alreadyAdded', isUnique);
   validationSchema.validateSync(string);
@@ -122,6 +126,7 @@ const generateInputHandler = (state) => (event) => {
       state.form.fillingProcess.valueValidationState = 'invalid';
       // eslint-disable-next-line no-param-reassign
       state.form.fillingProcess.error = message;
+      console.log(message);
     }
   }
 };
