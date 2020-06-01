@@ -93,21 +93,14 @@ const generateSubmitHandler = (state) => (event) => {
     });
 };
 
-const isValidUrl = (feeds, string) => {
+const validateUrl = (feeds, string) => {
   const isUnique = (str) => {
     const url = new URL(str);
     const rssLink = url.href;
     return (feeds.findIndex(({ link }) => (link === rssLink)) === -1);
   };
-  const validationSchema = yup.object().shape({
-    url: yup.string().required().url().test('alreadyAdded', 'alreadyAdded', isUnique),
-  });
-  try {
-    validationSchema.validateSync({ url: string });
-    return true;
-  } catch {
-    return false;
-  }
+  const validationSchema = yup.string().required().url('notUrl').test('alreadyAdded', 'alreadyAdded', isUnique);
+  validationSchema.validateSync(string);
 };
 
 const generateInputHandler = (state) => (event) => {
@@ -119,14 +112,17 @@ const generateInputHandler = (state) => (event) => {
   if (value === '') {
     // eslint-disable-next-line no-param-reassign
     state.form.fillingProcess.valueValidationState = 'empty';
-  } else if (isValidUrl(feeds, value)) {
-    // eslint-disable-next-line no-param-reassign
-    state.form.fillingProcess.valueValidationState = 'valid';
   } else {
-    // eslint-disable-next-line no-param-reassign
-    state.form.fillingProcess.valueValidationState = 'invalid';
-    // eslint-disable-next-line no-param-reassign
-    state.form.fillingProcess.error = 'doesnt matter';
+    try {
+      validateUrl(feeds, value);
+      // eslint-disable-next-line no-param-reassign
+      state.form.fillingProcess.valueValidationState = 'valid';
+    } catch ({ message }) {
+      // eslint-disable-next-line no-param-reassign
+      state.form.fillingProcess.valueValidationState = 'invalid';
+      // eslint-disable-next-line no-param-reassign
+      state.form.fillingProcess.error = message;
+    }
   }
 };
 
