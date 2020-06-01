@@ -41,17 +41,18 @@ const renderForm = (state, formEl, feedbackElement) => {
   const { form, addingFeedProcess } = state;
   const { fillingProcess, value } = form;
   inputField.value = value;
+  let submitButtonEnabled;
   switch (fillingProcess.valueValidationState) {
     case 'empty':
-      submitButton.setAttribute('disabled', '');
+      submitButtonEnabled = false;
       inputField.classList.remove('is-invalid');
       break;
     case 'valid':
-      submitButton.removeAttribute('disabled');
+      submitButtonEnabled = true;
       inputField.classList.remove('is-invalid');
       break;
     case 'invalid':
-      submitButton.setAttribute('disabled', '');
+      submitButtonEnabled = false;
       inputField.classList.add('is-invalid');
       // Вывести fillingProcess.error, если есть куда.
       break;
@@ -69,9 +70,14 @@ const renderForm = (state, formEl, feedbackElement) => {
     case 'working':
       // eslint-disable-next-line no-param-reassign
       feedbackElement.textContent = '';
-      submitButton.setAttribute('disabled', '');
+      submitButtonEnabled = false;
       break;
     default: throw new Error(`Wrong adding feed state: ${addingFeedProcess.processState}`);
+  }
+  if (submitButtonEnabled) {
+    submitButton.removeAttribute('disabled');
+  } else {
+    submitButton.setAttribute('disabled', '');
   }
 };
 
