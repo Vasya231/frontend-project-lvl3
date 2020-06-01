@@ -115,13 +115,13 @@ const generateInputHandler = (state) => (event) => {
   state.form.value = value;
   if (value === '') {
     // eslint-disable-next-line no-param-reassign
-    state.form.fillingProcess.processState = 'empty';
+    state.form.fillingProcess.valueValidationState = 'empty';
   } else if (isValidUrl(feeds, value)) {
     // eslint-disable-next-line no-param-reassign
-    state.form.fillingProcess.processState = 'valid';
+    state.form.fillingProcess.valueValidationState = 'valid';
   } else {
     // eslint-disable-next-line no-param-reassign
-    state.form.fillingProcess.processState = 'invalid';
+    state.form.fillingProcess.valueValidationState = 'invalid';
     // eslint-disable-next-line no-param-reassign
     state.form.fillingProcess.error = 'doesnt matter';
   }
@@ -133,7 +133,7 @@ export default () => {
     posts: [],
     form: {
       fillingProcess: {
-        processState: 'empty',
+        valueValidationState: 'empty',
         error: '',
       },
       value: '',

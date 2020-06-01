@@ -41,7 +41,7 @@ const renderForm = (state, formEl, feedbackElement) => {
   const { form, addingFeedProcess } = state;
   const { fillingProcess, value } = form;
   inputField.value = value;
-  switch (fillingProcess.processState) {
+  switch (fillingProcess.valueValidationState) {
     case 'empty':
       submitButton.setAttribute('disabled', '');
       inputField.classList.remove('is-invalid');
@@ -55,7 +55,7 @@ const renderForm = (state, formEl, feedbackElement) => {
       inputField.classList.add('is-invalid');
       // Вывести fillingProcess.error, если есть куда.
       break;
-    default: throw new Error(`Wrong filling state: ${fillingProcess.processState}`);
+    default: throw new Error(`Wrong value validation state: ${fillingProcess.valueValidationState}`);
   }
   switch (addingFeedProcess.processState) {
     case 'stopped':
@@ -71,7 +71,7 @@ const renderForm = (state, formEl, feedbackElement) => {
       feedbackElement.textContent = '';
       submitButton.setAttribute('disabled', '');
       break;
-    default: throw new Error(`Wrong filling state: ${addingFeedProcess.processState}`);
+    default: throw new Error(`Wrong adding feed state: ${addingFeedProcess.processState}`);
   }
 };
 
