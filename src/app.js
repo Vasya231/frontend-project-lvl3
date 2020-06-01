@@ -90,47 +90,41 @@ const generateSubmitHandler = (state) => (event) => {
     });
 };
 
-const generateValidationSchema = (state) => {
+const isValidUrl = (feeds, string) => {
   const isUnique = (str) => {
     const url = new URL(str);
     const rssLink = url.href;
-    const { feeds } = state;
     return (feeds.findIndex(({ link }) => (link === rssLink)) === -1);
   };
-  const schema = yup.object().shape({
+  const validationSchema = yup.object().shape({
     url: yup.string().required().url().test('alreadyAdded', 'alreadyAdded', isUnique),
   });
-  return schema;
+  try {
+    validationSchema.validateSync({ url: string });
+    return true;
+  } catch {
+    return false;
+  }
 };
 
-const generateInputHandler = (state) => {
-  const validationSchema = generateValidationSchema(state);
-  const isValid = (string) => {
-    try {
-      validationSchema.validateSync({ url: string });
-      return true;
-    } catch {
-      return false;
-    }
-  };
-  return (event) => {
-    event.preventDefault();
-    const { value } = event.target;
+const generateInputHandler = (state) => (event) => {
+  event.preventDefault();
+  const { value } = event.target;
+  const { feeds } = state;
+  // eslint-disable-next-line no-param-reassign
+  state.form.value = value;
+  if (value === '') {
     // eslint-disable-next-line no-param-reassign
-    state.form.value = value;
-    if (value === '') {
-      // eslint-disable-next-line no-param-reassign
-      state.form.fillingProcess.processState = 'empty';
-    } else if (isValid(value)) {
-      // eslint-disable-next-line no-param-reassign
-      state.form.fillingProcess.processState = 'valid';
-    } else {
-      // eslint-disable-next-line no-param-reassign
-      state.form.fillingProcess.processState = 'invalid';
-      // eslint-disable-next-line no-param-reassign
-      state.form.fillingProcess.error = 'doesnt matter';
-    }
-  };
+    state.form.fillingProcess.processState = 'empty';
+  } else if (isValidUrl(feeds, value)) {
+    // eslint-disable-next-line no-param-reassign
+    state.form.fillingProcess.processState = 'valid';
+  } else {
+    // eslint-disable-next-line no-param-reassign
+    state.form.fillingProcess.processState = 'invalid';
+    // eslint-disable-next-line no-param-reassign
+    state.form.fillingProcess.error = 'doesnt matter';
+  }
 };
 
 export default () => {
