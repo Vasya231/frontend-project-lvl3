@@ -7,8 +7,8 @@ export default {
       unknownError: 'Unknown error',
       503: 'Error: Service Temporarily Unavailable (code 503)',
       404: 'Error: 404',
-      notUrl: 'URL entered is invalid',
-      alreadyAdded: 'Feed with that URL is arlready in list',
+      notUrl: 'Invalid URL',
+      alreadyAdded: 'Feed with that URL is already in list',
     },
   },
 };

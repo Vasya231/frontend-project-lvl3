@@ -126,7 +126,6 @@ const generateInputHandler = (state) => (event) => {
       state.form.fillingProcess.valueValidationState = 'invalid';
       // eslint-disable-next-line no-param-reassign
       state.form.fillingProcess.error = message;
-      console.log(message);
     }
   }
 };
