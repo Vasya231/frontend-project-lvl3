@@ -57,7 +57,6 @@ const renderForm = (state, formEl, feedbackElement) => {
       submitButtonEnabled = false;
       inputField.classList.add('is-invalid');
       submitButton.setAttribute('title', getErrorMessage(fillingProcess.error));
-      // Вывести fillingProcess.error, если есть куда.
       break;
     default: throw new Error(`Wrong value validation state: ${fillingProcess.valueValidationState}`);
   }

@@ -1,5 +1,4 @@
 const generateListItem = (item) => {
-  // console.log(item);
   const title = item.querySelector('title').textContent;
   const description = item.querySelector('description').textContent;
   const link = item.querySelector('link').textContent;
