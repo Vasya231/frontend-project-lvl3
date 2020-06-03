@@ -10,3 +10,13 @@
 @import "~bootstrap/scss/forms";
 @import "~bootstrap/scss/buttons";
 @import "~bootstrap/scss/list-group";
+
+
+:not(output):-moz-ui-invalid:not(:focus) {
+  box-shadow: none;
+}
+
+:not(output):-moz-ui-invalid:-moz-focusring:not(:focus) {
+  box-shadow: none;
+}
+
