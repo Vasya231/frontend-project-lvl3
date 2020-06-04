@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
@@ -62,7 +63,6 @@ const generateSubmitHandler = (state) => (event) => {
   const formValue = state.form.value;
   const url = new URL(formValue);
   const rssLink = url.href;
-  // eslint-disable-next-line no-param-reassign
   state.addingFeedProcess.processState = 'working';
   loadRss(rssLink)
     .then((parsedRss) => {
@@ -76,19 +76,15 @@ const generateSubmitHandler = (state) => (event) => {
       state.feeds.push(newFeed);
       const posts = items.map(generatePost.bind(null, id));
       state.posts.push(...posts);
-      // eslint-disable-next-line no-param-reassign
       state.addingFeedProcess.processState = 'stopped';
-      // eslint-disable-next-line no-param-reassign
       state.form.value = '';
-      // eslint-disable-next-line no-param-reassign
       state.form.fillingProcess.valueValidationState = 'empty';
       setTimeout(() => updateFeed(state, id), settings.refreshTimeout);
     })
     .catch((error) => {
-      // eslint-disable-next-line no-param-reassign
       state.addingFeedProcess.processState = 'stoppedWithError';
       const { message } = error;
-      // eslint-disable-next-line no-param-reassign
+
       state.addingFeedProcess.error = message;
     });
 };
@@ -111,20 +107,15 @@ const generateInputHandler = (state) => (event) => {
   event.preventDefault();
   const { value } = event.target;
   const { feeds } = state;
-  // eslint-disable-next-line no-param-reassign
   state.form.value = value;
   if (value === '') {
-    // eslint-disable-next-line no-param-reassign
     state.form.fillingProcess.valueValidationState = 'empty';
   } else {
     try {
       validateUrl(feeds, value);
-      // eslint-disable-next-line no-param-reassign
       state.form.fillingProcess.valueValidationState = 'valid';
     } catch ({ message }) {
-      // eslint-disable-next-line no-param-reassign
       state.form.fillingProcess.valueValidationState = 'invalid';
-      // eslint-disable-next-line no-param-reassign
       state.form.fillingProcess.error = message;
     }
   }

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { watch } from 'melanke-watchjs';
 import i18next from 'i18next';
 
@@ -24,9 +25,7 @@ const generateItemElement = ({ title, link }) => {
 const getErrorMessage = (error) => i18next.t(`errors.${error}`, 'errors.unknownError');
 
 const renderFeeds = ({ feeds, posts }, feedsColElement, itemsColElement) => {
-  // eslint-disable-next-line no-param-reassign
   feedsColElement.innerHTML = '';
-  // eslint-disable-next-line no-param-reassign
   itemsColElement.innerHTML = '';
   const sortedPosts = [...posts].sort(
     ({ dateAdded: date1 }, { dateAdded: date2 }) => (date2 - date1),
@@ -62,15 +61,12 @@ const renderForm = (state, formEl, feedbackElement) => {
   }
   switch (addingFeedProcess.processState) {
     case 'stopped':
-      // eslint-disable-next-line no-param-reassign
       feedbackElement.textContent = '';
       break;
     case 'stoppedWithError':
-      // eslint-disable-next-line no-param-reassign
       feedbackElement.textContent = getErrorMessage(addingFeedProcess.error);
       break;
     case 'working':
-      // eslint-disable-next-line no-param-reassign
       feedbackElement.textContent = '';
       submitButtonEnabled = false;
       break;
