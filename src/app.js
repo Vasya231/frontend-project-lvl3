@@ -90,17 +90,13 @@ const generateSubmitHandler = (state) => (event) => {
 };
 
 const validateUrl = (feeds, string) => {
-  const isUnique = (str) => {
-    try {
-      const url = new URL(str);
-      const rssLink = url.href;
-      return (feeds.findIndex(({ link }) => (link === rssLink)) === -1);
-    } catch {
-      return false;
-    }
-  };
-  const validationSchema = yup.string().required().url('notUrl').test('alreadyAdded', 'alreadyAdded', isUnique);
-  validationSchema.validateSync(string);
+  const stringValidationSchema = yup.string().required().url('notUrl');
+  stringValidationSchema.validateSync(string);
+  const url = new URL(string);
+  const rssLink = url.href;
+  const oldLinks = feeds.map(({ link }) => link);
+  const rssLinkValidationSchema = yup.mixed().notOneOf(oldLinks, 'alreadyAdded');
+  rssLinkValidationSchema.validateSync(rssLink);
 };
 
 const generateInputHandler = (state) => (event) => {
