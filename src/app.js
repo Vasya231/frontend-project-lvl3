@@ -78,7 +78,7 @@ const generateSubmitHandler = (state) => (event) => {
       state.posts.push(...posts);
       state.addingFeedProcess.processState = 'stopped';
       state.form.value = '';
-      state.form.fillingProcess.valueValidationState = 'empty';
+      state.form.fillingProcess.status = 'empty';
       setTimeout(() => updateFeed(state, id), settings.refreshTimeout);
     })
     .catch((error) => {
@@ -105,13 +105,13 @@ const generateInputHandler = (state) => (event) => {
   const { feeds } = state;
   state.form.value = value;
   if (value === '') {
-    state.form.fillingProcess.valueValidationState = 'empty';
+    state.form.fillingProcess.status = 'empty';
   } else {
     try {
       validateUrl(feeds, value);
-      state.form.fillingProcess.valueValidationState = 'valid';
+      state.form.fillingProcess.status = 'valid';
     } catch ({ message }) {
-      state.form.fillingProcess.valueValidationState = 'invalid';
+      state.form.fillingProcess.status = 'invalid';
       state.form.fillingProcess.error = message;
     }
   }
@@ -123,7 +123,7 @@ export default () => {
     posts: [],
     form: {
       fillingProcess: {
-        valueValidationState: 'empty',
+        status: 'empty',
         error: '',
       },
       value: '',
