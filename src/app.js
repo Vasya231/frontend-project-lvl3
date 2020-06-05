@@ -4,7 +4,7 @@ import axios from 'axios';
 import * as yup from 'yup';
 import { uniqueId, differenceWith } from 'lodash';
 import texts from './locales';
-import initWatchers from './view';
+import { initWatchers, syncForm } from './view';
 import { parseRss, proxifyUrl } from './utils';
 import settings from './settings';
 
@@ -145,6 +145,7 @@ export default () => {
     resources: texts,
   }).then(() => {
     initWatchers(state, elements);
+    syncForm(state, elements);
     elements.form.addEventListener('submit', generateSubmitHandler(state));
     const inputField = elements.form.querySelector('input[name="url"]');
     inputField.addEventListener('input', generateInputHandler(state));

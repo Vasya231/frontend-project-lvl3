@@ -94,8 +94,11 @@ const initWatchers = (
   watch(state, ['form', 'addingFeedProcess'], () => {
     renderForm(state, form, formFeedbackElement);
   });
-  renderForm(state, form, formFeedbackElement);
 };
 
+const syncForm = (state, { form, formFeedbackElement }) => (
+  renderForm(state, form, formFeedbackElement)
+);
 
-export default initWatchers;
+
+export { initWatchers, syncForm };
