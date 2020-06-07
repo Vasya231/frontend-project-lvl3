@@ -12,12 +12,16 @@
     <div class="jumbotron">
       <h1>RSS reader</h1>
       <p class="lead">Start reading RSS today! It is easy, it is nicely.</p>
-      <form class="form-inline rss-form">
-        <input type="text" class="form-control mr-sm-2 mb-2 mb-sm-0" required="" name="url" placeholder="rss-link">        
-        <button type="submit" class="btn btn-primary" data-toggle="tooltip" title="">Add</button>
-      </form>
-      <div class="feedback text-danger"></div>
+      <form class="rss-form">
+        <div class="form-inline">
+          <label class="sr-only" for="url-input">Input feed URL</label>
+          <input type="text" class="form-control mr-sm-2 mb-2 mb-sm-0" required="" name="url" placeholder="rss-link" id="url-input">        
+          <button type="submit" class="btn btn-primary" data-toggle="tooltip" title="">Add</button>
+        </div>
+        <div class="feedback text-danger mt-1"></div>
+      </form>      
     </div>
+
     <div class="row">
       <div class="col-12 col-md-5 mb-3">
         <div class="rss-feeds list-group"></div>
