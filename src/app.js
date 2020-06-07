@@ -134,10 +134,10 @@ export default () => {
     },
   };
   const elements = {
-    form: document.querySelector('form.rss-form'),
-    feedsColElement: document.querySelector('div.rss-feeds'),
-    itemsColElement: document.querySelector('div.rss-items'),
-    formFeedbackElement: document.querySelector('div.feedback'),
+    form: document.querySelector('.rss-form'),
+    feedsColElement: document.querySelector('.rss-feeds'),
+    itemsColElement: document.querySelector('.rss-items'),
+    formFeedbackElement: document.querySelector('.feedback'),
   };
   i18next.init({
     lng: 'en',
