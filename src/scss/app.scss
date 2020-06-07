@@ -10,7 +10,6 @@
 @import "~bootstrap/scss/forms";
 @import "~bootstrap/scss/buttons";
 @import "~bootstrap/scss/list-group";
-@import "~bootstrap/scss/mixins/breakpoints";
 
 
 :not(output):-moz-ui-invalid:not(:focus) {
@@ -21,8 +20,10 @@
   box-shadow: none;
 }
 
-@include media-breakpoint-down(sm) {
+@media (min-width: 352px) and (max-width: 575px) {
   .btn-mb-16 {
     margin-bottom: 1rem;
   }
 }
+
+// 352-575
