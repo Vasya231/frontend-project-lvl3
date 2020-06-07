@@ -19,11 +19,3 @@
 :not(output):-moz-ui-invalid:-moz-focusring:not(:focus) {
   box-shadow: none;
 }
-
-@media (min-width: 352px) and (max-width: 575px) {
-  .btn-mb-16 {
-    margin-bottom: 1rem;
-  }
-}
-
-// 352-575
