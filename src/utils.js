@@ -12,6 +12,12 @@ const generateListItem = (item) => {
 const parseRss = (data) => {
   const parser = new DOMParser();
   const xml = parser.parseFromString(data, 'text/xml');
+  const parserError = xml.querySelector('parsererror');
+  if (parserError) {
+    const error = new Error(parserError.textContent);
+    error.isParserError = true;
+    throw error;
+  }
   const title = xml.querySelector('channel > title').textContent;
   const description = xml.querySelector('channel > description').textContent;
   const itemsXml = xml.querySelectorAll('channel > item');
