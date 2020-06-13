@@ -2,7 +2,7 @@
 import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
-import { uniqueId, differenceWith } from 'lodash';
+import { uniqueId, differenceBy } from 'lodash';
 import texts from './locales';
 import { initWatchers, syncForm } from './view';
 import { parseRss, proxifyUrl } from './utils';
@@ -49,12 +49,10 @@ const updateFeed = (state, feedId) => {
     feed.link = link;
     feed.title = title;
     feed.description = description;
-    const posts = items.map(generatePost.bind(null, feedId));
-    const newPosts = differenceWith(posts, state.posts,
-      ({ feedId: id1, link: link1 }, { feedId: id2, link: link2 }) => (
-        (id1 === id2) && (link1 === link2)
-      ));
-    state.posts.push(...newPosts);
+    const newPosts = items.map(generatePost.bind(null, feedId));
+    const oldPosts = state.posts.filter(({ feedId: currentFeedId }) => (currentFeedId === feedId));
+    const addedPosts = differenceBy(newPosts, oldPosts, ({ link: currentLink }) => (currentLink));
+    state.posts.push(...addedPosts);
   }).catch((e) => {
     console.log(`ERROR while updating feed ${link}:`, e);
   }).then(() => setTimeout(() => updateFeed(state, feedId), settings.refreshTimeout));
@@ -73,7 +71,7 @@ const generateSubmitHandler = (state) => (event) => {
       } = parsedRss;
       const id = uniqueId();
       const newFeed = {
-        id, link: rssLink, title, description, items: [],
+        id, link: rssLink, title, description,
       };
       state.feeds.push(newFeed);
       const posts = items.map(generatePost.bind(null, id));
