@@ -10,21 +10,9 @@ import settings from './settings';
 
 const loadRss = (rssLink) => axios
   .get(proxifyUrl(rssLink), { timeout: settings.responseTimeout })
-  .catch((error) => {
-    const { response } = error;
-    if (response) {
-      throw new Error(response.status);
-    } else {
-      throw new Error('axiosDefault');
-    }
-  })
   .then((response) => {
-    try {
-      const parsedObj = parseRss(response.data);
-      return parsedObj;
-    } catch {
-      throw new Error('parserError');
-    }
+    const parsedObj = parseRss(response.data);
+    return parsedObj;
   });
 
 const generatePost = (feedId, {
@@ -36,6 +24,20 @@ const generatePost = (feedId, {
   link,
   dateAdded: (pubDate || Date.now()),
 });
+
+const getRssLoadingErrorCode = (error) => {
+  if (error.isParserError) {
+    return 'notRss';
+  }
+  const { message, response } = error;
+  if (response) {
+    return (response.status);
+  }
+  if (message === `timeout of ${settings.responseTimeout}ms exceeded`) {
+    return 'timeoutError';
+  }
+  return 'unknownError';
+};
 
 const updateFeed = (state, feedId) => {
   const feed = state.feeds.find(({ id }) => (feedId === id));
@@ -83,16 +85,16 @@ const generateSubmitHandler = (state) => (event) => {
     })
     .catch((error) => {
       state.addingFeedProcess.processState = 'stoppedWithError';
-      const { message } = error;
-
-      state.addingFeedProcess.error = message;
+      console.log(error.message);
+      const errorCode = getRssLoadingErrorCode(error);
+      state.addingFeedProcess.error = errorCode;
     });
 };
 
-const validateUrl = (feeds, string) => {
+const validateUrl = (feeds, inputValue) => {
   const stringValidationSchema = yup.string().required().url('notUrl');
-  stringValidationSchema.validateSync(string);
-  const url = new URL(string);
+  stringValidationSchema.validateSync(inputValue);
+  const url = new URL(inputValue);
   const rssLink = url.href;
   const oldLinks = feeds.map(({ link }) => link);
   const rssLinkValidationSchema = yup.mixed().notOneOf(oldLinks, 'alreadyAdded');
